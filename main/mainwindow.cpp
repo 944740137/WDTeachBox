@@ -25,7 +25,10 @@ MainWindow::MainWindow(const QString &ipAddress_in, int port_in, QWidget *parent
     ui->setNet_Btn->setText("修改");
     ui->setNet_Btn->setCheckable(true);
     ui->netStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
-    ui->netStatus_Label->setText("断开");
+    ui->netStatus_Label->setText("主站断开");
+
+    ui->slaveStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
+    ui->slaveStatus_Label->setText("从站掉线");
     //
 }
 
@@ -85,6 +88,7 @@ void MainWindow::on_setNet_Btn_toggled(bool checked)
     }
 }
 
+
 // tmp
 void MainWindow::on_tmp_clicked()
 {
@@ -100,4 +104,8 @@ void MainWindow::on_tmp2_clicked()
 void MainWindow::on_ctr_ComboBox_activated(int index)
 {
     this->clientCom->changeCtronller(index);
+}
+void MainWindow::on_plan_ComboBox_activated(int index)
+{
+    this->clientCom->changePlanner(index);
 }

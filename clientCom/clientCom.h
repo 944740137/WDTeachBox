@@ -22,7 +22,7 @@ public:
 
 struct TcpMessage
 {
-    uint16_t num;
+    uint16_t commandNum;
     char data[256] = {0};
 };
 class ClientCom:public QObject
@@ -33,6 +33,9 @@ class ClientCom:public QObject
     friend class MainWindow;
 private:
     Ui::MainWindow *ui;
+    //从站状态查询定时器
+    QTimer *checkoutSlaveTimer;
+
     QTimer *timer;
     QString ip;
     int port;
@@ -52,11 +55,14 @@ public:
 
     //功能
     void changeCtronller(int index);
+    void changePlanner(int index);
 
 private slots:
+    void checkSlaveConnect();//从站状态查询
     void toConnect();
     void connected();
     void disconnected();
     void receiveMessages();
+
 };
 #endif // CLIENTCOM_H

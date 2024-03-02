@@ -25,6 +25,7 @@ public:
     void resetNetConfigInterface();
 
 private slots:
+
     //功能列表
     void on_fun_ListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 
@@ -33,6 +34,7 @@ private slots:
 
     //归控切换
     void on_ctr_ComboBox_activated(int index);
+    void on_plan_ComboBox_activated(int index);
 
     //tmp
     void on_tmp_clicked();

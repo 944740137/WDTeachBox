@@ -31,6 +31,10 @@ ClientCom::~ClientCom()
 ClientCom::ClientCom(const QString &ipAddress_in, int port_in, Ui::MainWindow *ui, QWidget *parent):ip(ipAddress_in),
     port(port_in),timer(new QTimer(this)),tcpSocket(new QTcpSocket(this))
 {
+    this->checkoutSlaveTimer = new QTimer(this);
+    connect(this->checkoutSlaveTimer, SIGNAL(timeout()), this, SLOT(checkSlaveConnect()));
+    this->checkoutSlaveTimer->start(500);
+
     Q_UNUSED(parent);
     connect(this->timer, SIGNAL(timeout()), this, SLOT(toConnect()));
     this->timer->start(3000);
@@ -46,7 +50,7 @@ void ClientCom::connected()
     this->timer->stop();
     // 连接状态指示灯
     ui->netStatus_Label->setStyleSheet("background-color: rgb(37,231,18)");
-    ui->netStatus_Label->setText("在线");
+    ui->netStatus_Label->setText("主站连接");
 }
 void ClientCom::disconnected()
 {
@@ -55,7 +59,9 @@ void ClientCom::disconnected()
     this->timer->start();
     // 连接状态指示灯
     ui->netStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
-    ui->netStatus_Label->setText("断开");
+    ui->netStatus_Label->setText("主站断开");
+    ui->slaveStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
+    ui->slaveStatus_Label->setText("从站掉线");
 }
 void ClientCom::toConnect()
 {
@@ -70,22 +76,46 @@ void ClientCom::receiveMessages()
         qDebug() <<  " 接收的数据包有误 不是预设固定帧格式的大小";
     QString str_data = QString::fromLocal8Bit(this->tcpRecvMessage.data); //char[] 转 string
     QJsonDocument jsonDocument = QJsonDocument::fromJson(str_data.toLocal8Bit().data());//string 转 json
-    switch (this->tcpRecvMessage.num)
+    switch (this->tcpRecvMessage.commandNum)
     {
     case Response_ChangeController:
-        qDebug() <<  " error "<<jsonDocument["error"].toString();
-        qDebug() <<  " result "<<jsonDocument["result"].toInt();
+        if(!jsonDocument["result"].toBool())
+        {
+            qDebug()<<jsonDocument["error"].toString();
+        }
+        ui->ctr_ComboBox->setCurrentIndex(jsonDocument["controlLaw"].toInt());
+        break;
+
+    case Response_ChangePlanner:
+        if(!jsonDocument["result"].toBool())
+        {
+            qDebug()<<jsonDocument["error"].toString();
+        }
+        ui->ctr_ComboBox->setCurrentIndex(jsonDocument["controlLaw"].toInt());
+        break;
+
+    case Response_SlaveConnect:
+        if(jsonDocument["connect"].toBool())
+        {
+            ui->slaveStatus_Label->setStyleSheet("background-color: rgb(37,231,18)");
+            ui->slaveStatus_Label->setText("从站在线");
+        }
+        else
+        {
+            ui->slaveStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
+            ui->slaveStatus_Label->setText("从站掉线");
+        }
         break;
     default:
         break;
     }
     memset(this->tcpRecvMessage.data, 0, sizeof(this->tcpRecvMessage.data));
 }
-void ClientCom::sendMessages(uint16_t num, const QString &messages)
+void ClientCom::sendMessages(uint16_t commandNum, const QString &messages)
 {
     if(tcpSocket->state() != tcpSocket->ConnectedState)
         return;
-    this->tcpSendMessage.num = num;
+    this->tcpSendMessage.commandNum = commandNum;
     //qstring转char[]
     qstrncpy(this->tcpSendMessage.data, (messages.toUtf8()).constData(), sizeof(this->tcpSendMessage.data));
     this->tcpSocket->write(QByteArray((char*)&this->tcpSendMessage, sizeof(this->tcpSendMessage)));
@@ -117,7 +147,20 @@ bool ClientCom::resetConnect(const QString &ip_in,int port_in)
 void ClientCom::changeCtronller(int index)
 {
     QJsonObject jsonObject;
-    jsonObject["Controller"] = index;
+    jsonObject["controlLaw"] = index;
     //json to qstring
     this->sendMessages(Request_ChangeController, QString(QJsonDocument(jsonObject).toJson()));
 }
+void ClientCom::changePlanner(int index)
+{
+    QJsonObject jsonObject;
+    jsonObject["planner"] = index;
+    //json to qstring
+    this->sendMessages(Request_ChangePlanner, QString(QJsonDocument(jsonObject).toJson()));
+}
+void ClientCom::checkSlaveConnect()
+{
+    QJsonObject jsonObject;
+    this->sendMessages(Ask_SlaveConnect, QString(QJsonDocument(jsonObject).toJson()));
+}
+

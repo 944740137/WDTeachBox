@@ -124,7 +124,7 @@
        </font>
       </property>
       <property name="title">
-       <string>网络设置</string>
+       <string>网络设置(连接主站)</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -214,7 +214,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>71</width>
+      <width>101</width>
       <height>41</height>
      </rect>
     </property>
@@ -225,7 +225,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0</string>
+     <string/>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -260,7 +260,7 @@
    <widget class="QComboBox" name="plan_ComboBox">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>330</x>
       <y>20</y>
       <width>120</width>
       <height>30</height>
@@ -276,11 +276,16 @@
       <string>T型曲线</string>
      </property>
     </item>
+    <item>
+     <property name="text">
+      <string>双S曲线</string>
+     </property>
+    </item>
    </widget>
    <widget class="QLabel" name="plan_Label">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>240</x>
       <y>20</y>
       <width>90</width>
       <height>30</height>
@@ -301,7 +306,7 @@
    <widget class="QLabel" name="ctr_Label">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>450</x>
       <y>20</y>
       <width>90</width>
       <height>30</height>
@@ -322,7 +327,7 @@
    <widget class="QComboBox" name="ctr_ComboBox">
     <property name="geometry">
      <rect>
-      <x>450</x>
+      <x>540</x>
       <y>20</y>
       <width>120</width>
       <height>30</height>
@@ -782,6 +787,28 @@
     </property>
     <property name="text">
      <string>stop</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="slaveStatus_Label">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>10</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Ubuntu</family>
+      <pointsize>15</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
