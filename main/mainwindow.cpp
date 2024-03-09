@@ -24,12 +24,19 @@ MainWindow::MainWindow(const QString &ipAddress_in, int port_in, QWidget *parent
     ui->port_LineEdit->setEnabled(false);
     ui->setNet_Btn->setText("修改");
     ui->setNet_Btn->setCheckable(true);
+    //
     ui->netStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
     ui->netStatus_Label->setText("主站断开");
-
+    //
     ui->slaveStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
     ui->slaveStatus_Label->setText("从站掉线");
-    //
+    // 速度
+    ui->jogVel_lab_2->setText(QString::number(1));
+    ui->runVel_lab_2->setText(QString::number(1));
+
+    // 运行界面
+    this->askPosTimer = new QTimer(this);
+    connect(this->askPosTimer, SIGNAL(timeout()), this, SLOT(getPosition()));
 }
 
 MainWindow::~MainWindow()
@@ -47,6 +54,12 @@ void MainWindow::on_fun_ListWidget_currentItemChanged(QListWidgetItem *current, 
     {
         this->resetNetConfigInterface();
     }
+    // 进入运行界面启动查询位置定时器位置
+    if(current->text()=="运行")
+        this->askPosTimer->start(100);
+    else
+       this->askPosTimer->stop();
+
 }
 // 网络设置
 void MainWindow::resetNetConfigInterface()
@@ -88,7 +101,6 @@ void MainWindow::on_setNet_Btn_toggled(bool checked)
     }
 }
 
-
 // tmp
 void MainWindow::on_tmp_clicked()
 {
@@ -100,7 +112,7 @@ void MainWindow::on_tmp2_clicked()
 
 }
 
-
+//
 void MainWindow::on_ctr_ComboBox_activated(int index)
 {
     this->clientCom->changeCtronller(index);
@@ -108,4 +120,69 @@ void MainWindow::on_ctr_ComboBox_activated(int index)
 void MainWindow::on_plan_ComboBox_activated(int index)
 {
     this->clientCom->changePlanner(index);
+}
+
+//速度
+void MainWindow::setVel()
+{
+    int jogVel = ui->jogVel_lab_2->text().toInt();
+    int runVel = ui->runVel_lab_2->text().toInt();
+    this->clientCom->changeVel(runVel, jogVel);
+}
+void MainWindow::velUp(int &vel)
+{
+    if(vel == 1)
+        vel = 0;
+    vel = vel + 5;
+    if(vel >= 100)
+        vel = 100;
+}
+void MainWindow::velDown(int &vel)
+{
+    vel = vel - 5;
+    if(vel <= 0)
+        vel = 1;
+}
+void MainWindow::on_jogVel_Btn2_clicked()
+{
+    int jogVel = ui->jogVel_lab_2->text().toInt();
+    velUp(jogVel);
+    ui->jogVel_lab_2->setText(QString::number(jogVel));
+    this->setVel();
+}
+void MainWindow::on_jogVel_Btn1_clicked()
+{
+    int jogVel = ui->jogVel_lab_2->text().toInt();
+    velDown(jogVel);
+    ui->jogVel_lab_2->setText(QString::number(jogVel));
+    this->setVel();
+}
+void MainWindow::on_runVel_Btn_clicked()
+{
+    int runVel = ui->runVel_lab_2->text().toInt();
+    velUp(runVel);
+    ui->runVel_lab_2->setText(QString::number(runVel));
+    this->setVel();
+}
+void MainWindow::on_runVel_Btn_2_clicked()
+{
+    int runVel = ui->runVel_lab_2->text().toInt();
+    velDown(runVel);
+    ui->runVel_lab_2->setText(QString::number(runVel));
+    this->setVel();
+}
+
+// 按钮类
+void MainWindow::on_backZero_Btn_clicked()
+{
+    this->clientCom->backToZero();
+}
+
+void MainWindow::on_stop_Btn_clicked()
+{
+    this->clientCom->stopMove();
+}
+void MainWindow::getPosition()
+{
+    this->clientCom->getPosition();
 }

@@ -51,6 +51,7 @@ void ClientCom::connected()
     // 连接状态指示灯
     ui->netStatus_Label->setStyleSheet("background-color: rgb(37,231,18)");
     ui->netStatus_Label->setText("主站连接");
+    this->initialInformationInquiry();
 }
 void ClientCom::disconnected()
 {
@@ -69,6 +70,7 @@ void ClientCom::toConnect()
     this->tcpSocket->connectToHost(hostAddress, this->port);
     this->tcpSocket->waitForConnected(2); //wait 2ms
 }
+
 void ClientCom::receiveMessages()
 {
     int ret = this->tcpSocket->read((char*)&this->tcpRecvMessage,sizeof(this->tcpSendMessage));
@@ -78,6 +80,7 @@ void ClientCom::receiveMessages()
     QJsonDocument jsonDocument = QJsonDocument::fromJson(str_data.toLocal8Bit().data());//string 转 json
     switch (this->tcpRecvMessage.commandNum)
     {
+    // 更换控制器
     case Response_ChangeController:
         if(!jsonDocument["result"].toBool())
         {
@@ -85,15 +88,15 @@ void ClientCom::receiveMessages()
         }
         ui->ctr_ComboBox->setCurrentIndex(jsonDocument["controlLaw"].toInt());
         break;
-
+        // 更换规划器
     case Response_ChangePlanner:
         if(!jsonDocument["result"].toBool())
         {
             qDebug()<<jsonDocument["error"].toString();
         }
-        ui->ctr_ComboBox->setCurrentIndex(jsonDocument["controlLaw"].toInt());
+        ui->ctr_ComboBox->setCurrentIndex(jsonDocument["planner"].toInt());
         break;
-
+        // 询问从站状态
     case Response_SlaveConnect:
         if(jsonDocument["connect"].toBool())
         {
@@ -104,6 +107,34 @@ void ClientCom::receiveMessages()
         {
             ui->slaveStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
             ui->slaveStatus_Label->setText("从站掉线");
+        }
+        break;
+        // 示教器开机初始化
+    case Response_Start:
+        if(jsonDocument["connect"].toBool())
+        {
+            ui->slaveStatus_Label->setStyleSheet("background-color: rgb(37,231,18)");
+            ui->slaveStatus_Label->setText("从站在线");
+        }
+        else
+        {
+            ui->slaveStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
+            ui->slaveStatus_Label->setText("从站掉线");
+        }
+        ui->ctr_ComboBox->setCurrentIndex(jsonDocument["controlLaw"].toInt());
+        ui->plan_ComboBox->setCurrentIndex(jsonDocument["planner"].toInt());
+        ui->runVel_lab_2->setText(QString::number(jsonDocument["runSpeed"].toInt()));
+        ui->jogVel_lab_2->setText(QString::number(jsonDocument["jogspeed"].toInt()));
+        break;
+        // 修改速度
+    case Response_ChangeVel:
+        if(jsonDocument["result"].toBool())
+        {
+        }
+        // 回零
+    case Response_BackToZero:
+        if(jsonDocument["result"].toBool())
+        {
         }
         break;
     default:
@@ -158,9 +189,38 @@ void ClientCom::changePlanner(int index)
     //json to qstring
     this->sendMessages(Request_ChangePlanner, QString(QJsonDocument(jsonObject).toJson()));
 }
+void ClientCom::changeVel(int runVel, int jogVel)
+{
+    QJsonObject jsonObject;
+    jsonObject["runSpeed"] = runVel;
+    jsonObject["jogspeed"] = jogVel;
+    this->sendMessages(Request_ChangeVel, QString(QJsonDocument(jsonObject).toJson()));
+}
 void ClientCom::checkSlaveConnect()
 {
     QJsonObject jsonObject;
     this->sendMessages(Ask_SlaveConnect, QString(QJsonDocument(jsonObject).toJson()));
 }
-
+void ClientCom::initialInformationInquiry()
+{
+    QJsonObject jsonObject;
+    this->sendMessages(Start, QString(QJsonDocument(jsonObject).toJson()));
+}
+void ClientCom::backToZero()
+{
+    QJsonObject jsonObject;
+    this->sendMessages(Request_BackToZero, QString(QJsonDocument(jsonObject).toJson()));
+}
+void ClientCom::stopMove()
+{
+    QJsonObject jsonObject;
+    this->sendMessages(Request_StopMove, QString(QJsonDocument(jsonObject).toJson()));
+}
+void ClientCom::getPosition()
+{
+    //static int i = 0;
+    //i++;
+    //qDebug()<<"i "<<i<<endl;
+    QJsonObject jsonObject;
+    this->sendMessages(Request_BackToZero, QString(QJsonDocument(jsonObject).toJson()));
+}

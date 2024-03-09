@@ -21,8 +21,16 @@ public:
     MainWindow(const MainWindow &) = delete;
     void operator=(const MainWindow &) = delete;
 
-    //网络
+    // 网络
     void resetNetConfigInterface();
+
+    // 速度
+    void setVel();
+    void velUp(int &vel);
+    void velDown(int &vel);
+
+    // 运行界面
+    QTimer *askPosTimer;
 
 private slots:
 
@@ -39,6 +47,19 @@ private slots:
     //tmp
     void on_tmp_clicked();
     void on_tmp2_clicked();
+
+    //速度
+    void on_jogVel_Btn2_clicked();
+    void on_jogVel_Btn1_clicked();
+    void on_runVel_Btn_clicked();
+    void on_runVel_Btn_2_clicked();
+
+    //按钮类
+    void on_backZero_Btn_clicked();
+    void on_stop_Btn_clicked();
+
+    //
+    void getPosition();
 
 private:
     Ui::MainWindow *ui;

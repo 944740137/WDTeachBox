@@ -36,7 +36,7 @@ private:
     //从站状态查询定时器
     QTimer *checkoutSlaveTimer;
 
-    QTimer *timer;
+    QTimer *timer; // connect
     QString ip;
     int port;
     QTcpSocket *tcpSocket;
@@ -54,8 +54,13 @@ public:
     void sendMessages(uint16_t num, const QString &messages);
 
     //功能
+    void getPosition();
+    void initialInformationInquiry();
     void changeCtronller(int index);
     void changePlanner(int index);
+    void changeVel(int runVel,int jogVel);
+    void backToZero();
+    void stopMove();
 
 private slots:
     void checkSlaveConnect();//从站状态查询
