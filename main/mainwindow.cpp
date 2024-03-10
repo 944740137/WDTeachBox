@@ -56,7 +56,7 @@ void MainWindow::on_fun_ListWidget_currentItemChanged(QListWidgetItem *current, 
     }
     // 进入运行界面启动查询位置定时器位置
     if(current->text()=="运行")
-        this->askPosTimer->start(100);
+        this->askPosTimer->start(500);//500ms
     else
        this->askPosTimer->stop();
 

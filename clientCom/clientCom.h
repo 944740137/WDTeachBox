@@ -23,7 +23,7 @@ public:
 struct TcpMessage
 {
     uint16_t commandNum;
-    char data[256] = {0};
+    char data[512] = {0};
 };
 class ClientCom:public QObject
 {

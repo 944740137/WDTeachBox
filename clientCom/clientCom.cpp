@@ -137,6 +137,25 @@ void ClientCom::receiveMessages()
         {
         }
         break;
+        // 查询位置
+    case Response_Position:
+        if(jsonDocument["result"].toBool())
+        {
+            ui->J1pos_Label2->setText(QString::number(jsonDocument["q"][0].toDouble(),'f', 2));
+            ui->J2pos_Label2->setText(QString::number(jsonDocument["q"][1].toDouble(),'f', 2));
+            ui->J3pos_Label2->setText(QString::number(jsonDocument["q"][2].toDouble(),'f', 2));
+            ui->J4pos_Label2->setText(QString::number(jsonDocument["q"][3].toDouble(),'f', 2));
+            ui->J5pos_Label2->setText(QString::number(jsonDocument["q"][4].toDouble(),'f', 2));
+            ui->J6pos_Label2->setText(QString::number(jsonDocument["q"][5].toDouble(),'f', 2));
+            ui->J7pos_Label2->setText(QString::number(jsonDocument["q"][6].toDouble(),'f', 2));
+
+            ui->C1pos_Label2->setText(QString::number(jsonDocument["X"][0].toDouble(),'f', 2));
+            ui->C2pos_Label2->setText(QString::number(jsonDocument["X"][1].toDouble(),'f', 2));
+            ui->C3pos_Label2->setText(QString::number(jsonDocument["X"][2].toDouble(),'f', 2));
+            ui->C4pos_Label2->setText(QString::number(jsonDocument["X"][3].toDouble(),'f', 2));
+            ui->C5pos_Label2->setText(QString::number(jsonDocument["X"][4].toDouble(),'f', 2));
+            ui->C6pos_Label2->setText(QString::number(jsonDocument["X"][5].toDouble(),'f', 2));
+        }
     default:
         break;
     }
@@ -220,7 +239,6 @@ void ClientCom::getPosition()
 {
     //static int i = 0;
     //i++;
-    //qDebug()<<"i "<<i<<endl;
     QJsonObject jsonObject;
-    this->sendMessages(Request_BackToZero, QString(QJsonDocument(jsonObject).toJson()));
+    this->sendMessages(Ask_Position, QString(QJsonDocument(jsonObject).toJson()));
 }
