@@ -21,12 +21,15 @@ class CommunicationController:public QObject
     Q_OBJECT
 
     friend class MainWindow;
+    friend class InterfaceController;
 private:
 
     Ui::MainWindow *ui;
 
     //从站状态查询定时器
     QTimer *checkoutSlaveTimer;
+    // 运行界面位置更新
+    QTimer *askPosTimer;
 
     // 网络通讯
     QTimer *connectTimer;
@@ -49,7 +52,6 @@ public:
 
     // 操作命令
     void initializeParamCommand();// 初始化示教器值
-    void getPositionCommand();
     void changeControllerCommand(int index);    // 切换速度，规控
     void changePlannerCommand(int index);
     void changeVelocityCommand(int runVel,int jogVel);
@@ -65,5 +67,6 @@ private slots:
 
     // 定时器命令
     void checkSlaveConnectCommand();//从站状态查询
+    void getPositionCommand();
 };
 #endif // CLIENTCOM_H

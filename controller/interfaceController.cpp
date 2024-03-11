@@ -1,6 +1,7 @@
 #include <QDebug>
 #include "controller/interfaceController.h"
 
+
 InterfaceController::~InterfaceController()
 {
 
@@ -27,6 +28,26 @@ InterfaceController::InterfaceController(const Config &config, Ui::MainWindow *u
     ui->netStatus_Label->setText("主站断开");
     ui->slaveStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
     ui->slaveStatus_Label->setText("从站掉线");
+}
+void InterfaceController::functionPageSwitching(QListWidgetItem *current, QListWidgetItem *previous, CommunicationController *communicationController)
+{
+    if(previous==nullptr)
+        return;
 
+    if(previous->text()=="设置" && current->text()!="设置")
+    {
+        ui->IP_LineEdit->setText(communicationController->ip);
+        ui->port_LineEdit->setText(QString::number(communicationController->port));
+        ui->setNet_Btn->setChecked(false);
+        ui->setNet_Btn->setText("修改");
+        ui->IP_LineEdit->setEnabled(false);
+        ui->port_LineEdit->setEnabled(false);
+    }
+
+    // 进入运行界面启动查询位置定时器位置
+    if(current->text()=="运行")
+        communicationController->askPosTimer->start(500);//500ms
+    else
+        communicationController->askPosTimer->stop();
 
 }

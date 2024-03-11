@@ -35,9 +35,6 @@ public:
     void velUp(int &vel);
     void velDown(int &vel);
 
-    // 运行界面
-    QTimer *askPosTimer;
-
 private slots:
 
     //功能列表

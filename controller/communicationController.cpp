@@ -23,6 +23,10 @@ CommunicationController::CommunicationController(const Config &config, Ui::MainW
     this->checkoutSlaveTimer = new QTimer(this);
     connect(this->checkoutSlaveTimer, SIGNAL(timeout()), this, SLOT(checkSlaveConnectCommand()));
     this->checkoutSlaveTimer->start(500);
+
+    // 运行界面位置更新
+    this->askPosTimer = new QTimer(this);
+    connect(this->askPosTimer, SIGNAL(timeout()), this, SLOT(getPositionCommand()));
 }
 // 网络通讯
 void CommunicationController::connected()
@@ -223,6 +227,7 @@ void CommunicationController::stopMoveCommand()
 }
 void CommunicationController::getPositionCommand()
 {
+    qDebug()<<"getPositionCommand"<<endl;
     QJsonObject jsonObject;
     this->sendMessages(Ask_Position, QString(QJsonDocument(jsonObject).toJson()));
 }

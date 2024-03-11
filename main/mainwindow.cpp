@@ -11,10 +11,6 @@ MainWindow::MainWindow(const Config &config, Ui::MainWindow *ui, QWidget *parent
     ui->setupUi(this);
     this->communicationController = new CommunicationController(config, ui);
     this->interfaceController = new InterfaceController(config, ui);
-
-    // 运行界面
-    this->askPosTimer = new QTimer(this);
-    connect(this->askPosTimer, SIGNAL(timeout()), this, SLOT(getPosition()));
 }
 
 MainWindow::~MainWindow()
@@ -25,18 +21,7 @@ MainWindow::~MainWindow()
 // 功能列表
 void MainWindow::on_fun_ListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
-    if(previous==nullptr)
-        return;
-    if(previous->text()=="设置" && current->text()!="设置")
-    {
-        this->resetNetConfigInterface();
-    }
-    // 进入运行界面启动查询位置定时器位置
-    if(current->text()=="运行")
-        this->askPosTimer->start(500);//500ms
-    else
-       this->askPosTimer->stop();
-
+    this->interfaceController->functionPageSwitching(current, previous, this->communicationController);
 }
 // 网络设置
 void MainWindow::resetNetConfigInterface()
