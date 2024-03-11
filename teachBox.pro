@@ -16,7 +16,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    clientCom/clientCom.cpp \
+    controller/communicationController.cpp \
+    controller/interfaceController.cpp \
     json/json.cpp \
     main/main.cpp \
     main/mainwindow.cpp \
@@ -24,7 +25,8 @@ SOURCES += \
 
 
 HEADERS += \
-    clientCom/clientCom.h \
+    controller/communicationController.h \
+    controller/interfaceController.h \
     config.h \
     json/json.h \
     main/mainwindow.h \ \

@@ -1,8 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include "clientCom/clientCom.h"
+
+#include "controller/communicationController.h"
+#include "controller/interfaceController.h"
+#include "config.h"
+
 #include <QMainWindow>
 #include <QListWidgetItem>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -10,13 +15,14 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+private:
+    Ui::MainWindow *ui;
+    InterfaceController *interfaceController;
+    CommunicationController *communicationController;
 
 public:
-    ClientCom *clientCom;
-
     ~MainWindow();
-    MainWindow(const QString &ipAddress_in, int port_in, QWidget *parent = nullptr);
-
+    MainWindow(const Config &config, Ui::MainWindow *ui, QWidget *parent = nullptr);
     MainWindow() = delete;
     MainWindow(const MainWindow &) = delete;
     void operator=(const MainWindow &) = delete;
@@ -44,10 +50,6 @@ private slots:
     void on_ctr_ComboBox_activated(int index);
     void on_plan_ComboBox_activated(int index);
 
-    //tmp
-    void on_tmp_clicked();
-    void on_tmp2_clicked();
-
     //速度
     void on_jogVel_Btn2_clicked();
     void on_jogVel_Btn1_clicked();
@@ -61,7 +63,5 @@ private slots:
     //
     void getPosition();
 
-private:
-    Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

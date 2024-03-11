@@ -2,37 +2,15 @@
 #include "ui_mainwindow.h"
 #include "message/message.h"
 #include "json/json.h"
-extern ClientComThread *clientComThread;
 
-MainWindow::MainWindow(const QString &ipAddress_in, int port_in, QWidget *parent)
+MainWindow::MainWindow(const Config &config, Ui::MainWindow *ui, QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(ui)
 {
-    ui->setupUi(this);
-    this->clientCom = new ClientCom(ipAddress_in, port_in, ui);
 
-    // 网络设置
-    ui->IP_LineEdit->setText(ipAddress_in);
-    ui->port_LineEdit->setText(QString::number(port_in));
-    QRegExp ipExp("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
-    QValidator * ipFormat = new QRegExpValidator(ipExp, this);
-    ui->IP_LineEdit->setValidator(ipFormat);
-    ui->IP_LineEdit->setEnabled(false);
-    QRegExp portExp("^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$");
-    QValidator * portFormat = new QRegExpValidator(portExp, this);
-    ui->port_LineEdit->setValidator(portFormat);
-    ui->port_LineEdit->setEnabled(false);
-    ui->setNet_Btn->setText("修改");
-    ui->setNet_Btn->setCheckable(true);
-    //
-    ui->netStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
-    ui->netStatus_Label->setText("主站断开");
-    //
-    ui->slaveStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
-    ui->slaveStatus_Label->setText("从站掉线");
-    // 速度
-    ui->jogVel_lab_2->setText(QString::number(1));
-    ui->runVel_lab_2->setText(QString::number(1));
+    ui->setupUi(this);
+    this->communicationController = new CommunicationController(config, ui);
+    this->interfaceController = new InterfaceController(config, ui);
 
     // 运行界面
     this->askPosTimer = new QTimer(this);
@@ -42,8 +20,7 @@ MainWindow::MainWindow(const QString &ipAddress_in, int port_in, QWidget *parent
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete clientCom;
-    clientComThread->quit();
+    delete communicationController;
 }
 // 功能列表
 void MainWindow::on_fun_ListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
@@ -64,8 +41,8 @@ void MainWindow::on_fun_ListWidget_currentItemChanged(QListWidgetItem *current, 
 // 网络设置
 void MainWindow::resetNetConfigInterface()
 {
-    ui->IP_LineEdit->setText(this->clientCom->ip);
-    ui->port_LineEdit->setText(QString::number(this->clientCom->port));
+    ui->IP_LineEdit->setText(this->communicationController->ip);
+    ui->port_LineEdit->setText(QString::number(this->communicationController->port));
     ui->setNet_Btn->setChecked(false);
     ui->setNet_Btn->setText("修改");
     ui->IP_LineEdit->setEnabled(false);
@@ -95,31 +72,19 @@ void MainWindow::on_setNet_Btn_toggled(bool checked)
         ui->IP_LineEdit->setEnabled(false);
         ui->port_LineEdit->setEnabled(false);
         // 判断相同？
-        if(ip==this->clientCom->ip&&port.toInt()==this->clientCom->port)
+        if(ip==this->communicationController->ip&&port.toInt()==this->communicationController->port)
             return;
-        this->clientCom->resetConnect(ip,port.toInt());
+        this->communicationController->resetConnect(ip,port.toInt());
     }
 }
 
-// tmp
-void MainWindow::on_tmp_clicked()
-{
-
-}
-
-void MainWindow::on_tmp2_clicked()
-{
-
-}
-
-//
 void MainWindow::on_ctr_ComboBox_activated(int index)
 {
-    this->clientCom->changeCtronller(index);
+    this->communicationController->changeControllerCommand(index);
 }
 void MainWindow::on_plan_ComboBox_activated(int index)
 {
-    this->clientCom->changePlanner(index);
+    this->communicationController->changePlannerCommand(index);
 }
 
 //速度
@@ -127,7 +92,7 @@ void MainWindow::setVel()
 {
     int jogVel = ui->jogVel_lab_2->text().toInt();
     int runVel = ui->runVel_lab_2->text().toInt();
-    this->clientCom->changeVel(runVel, jogVel);
+    this->communicationController->changeVelocityCommand(runVel, jogVel);
 }
 void MainWindow::velUp(int &vel)
 {
@@ -175,14 +140,14 @@ void MainWindow::on_runVel_Btn_2_clicked()
 // 按钮类
 void MainWindow::on_backZero_Btn_clicked()
 {
-    this->clientCom->backToZero();
+    this->communicationController->backToZeroCommand();
 }
 
 void MainWindow::on_stop_Btn_clicked()
 {
-    this->clientCom->stopMove();
+    this->communicationController->stopMoveCommand();
 }
 void MainWindow::getPosition()
 {
-    this->clientCom->getPosition();
+    this->communicationController->getPositionCommand();
 }

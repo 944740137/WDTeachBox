@@ -1,77 +1,58 @@
-#include <QtWidgets/QWidget>
-#include <QThread>
 #include <QDebug>
-#include "clientCom/clientCom.h"
+#include "controller/communicationController.h"
 #include "json/json.h"
 #include "config.h"
 #include "protocol.h"
 
-ClientComThread::~ClientComThread()
-{
-}
-ClientComThread::ClientComThread()
-{
-}
-void ClientComThread::run()
-{
-    int i = 0;
-    while(1)
-    {
-        i++;
-        //        qDebug()<<" i"<<i<<endl;
-        sleep(2);
-    }
-}
-
-
-ClientCom::~ClientCom()
+CommunicationController::~CommunicationController()
 {
 
 }
-ClientCom::ClientCom(const QString &ipAddress_in, int port_in, Ui::MainWindow *ui, QWidget *parent):ip(ipAddress_in),
-    port(port_in),timer(new QTimer(this)),tcpSocket(new QTcpSocket(this))
+CommunicationController::CommunicationController(const Config &config, Ui::MainWindow *ui, QWidget *parent):ip(config.ip),
+    port(config.port),connectTimer(new QTimer(this)),tcpSocket(new QTcpSocket(this)),ui(ui)
 {
-    this->checkoutSlaveTimer = new QTimer(this);
-    connect(this->checkoutSlaveTimer, SIGNAL(timeout()), this, SLOT(checkSlaveConnect()));
-    this->checkoutSlaveTimer->start(500);
-
     Q_UNUSED(parent);
-    connect(this->timer, SIGNAL(timeout()), this, SLOT(toConnect()));
-    this->timer->start(3000);
+    //网络通信
+    connect(this->connectTimer, SIGNAL(timeout()), this, SLOT(toConnect()));
+    this->connectTimer->start(3000);
     connect(this->tcpSocket, SIGNAL(connected()), this, SLOT(connected()));
     connect(this->tcpSocket, SIGNAL(disconnected()), this, SLOT(disconnected()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveMessages()));
-    this->ui=ui;
+
+    // 从站心跳
+    this->checkoutSlaveTimer = new QTimer(this);
+    connect(this->checkoutSlaveTimer, SIGNAL(timeout()), this, SLOT(checkSlaveConnectCommand()));
+    this->checkoutSlaveTimer->start(500);
 }
-void ClientCom::connected()
+// 网络通讯
+void CommunicationController::connected()
 {
     qDebug()<<"连接成功"<<endl;
     // 停止重连计时器
-    this->timer->stop();
+    this->connectTimer->stop();
     // 连接状态指示灯
     ui->netStatus_Label->setStyleSheet("background-color: rgb(37,231,18)");
     ui->netStatus_Label->setText("主站连接");
-    this->initialInformationInquiry();
+    this->initializeParamCommand();
 }
-void ClientCom::disconnected()
+void CommunicationController::disconnected()
 {
     qDebug()<<"连接断开"<<endl;
     // 开始重连计时器
-    this->timer->start();
+    this->connectTimer->start();
     // 连接状态指示灯
     ui->netStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
     ui->netStatus_Label->setText("主站断开");
     ui->slaveStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
     ui->slaveStatus_Label->setText("从站掉线");
 }
-void ClientCom::toConnect()
+void CommunicationController::toConnect()
 {
     QHostAddress hostAddress(this->ip);
     this->tcpSocket->connectToHost(hostAddress, this->port);
     this->tcpSocket->waitForConnected(2); //wait 2ms
 }
-
-void ClientCom::receiveMessages()
+void CommunicationController::receiveMessages()
 {
     int ret = this->tcpSocket->read((char*)&this->tcpRecvMessage,sizeof(this->tcpSendMessage));
     if(ret !=   sizeof(this->tcpSendMessage))
@@ -161,7 +142,8 @@ void ClientCom::receiveMessages()
     }
     memset(this->tcpRecvMessage.data, 0, sizeof(this->tcpRecvMessage.data));
 }
-void ClientCom::sendMessages(uint16_t commandNum, const QString &messages)
+// 网络通讯
+void CommunicationController::sendMessages(uint16_t commandNum, const QString &messages)
 {
     if(tcpSocket->state() != tcpSocket->ConnectedState)
         return;
@@ -171,9 +153,9 @@ void ClientCom::sendMessages(uint16_t commandNum, const QString &messages)
     this->tcpSocket->write(QByteArray((char*)&this->tcpSendMessage, sizeof(this->tcpSendMessage)));
     memset(this->tcpSendMessage.data, 0, sizeof(this->tcpSendMessage.data));
 }
-bool ClientCom::resetConnect(const QString &ip_in,int port_in)
+bool CommunicationController::resetConnect(const QString &ip_in,int port_in)
 {
-    this->timer->stop();
+    this->connectTimer->stop();
     this->ip = ip_in;
     this->port = port_in;
 
@@ -191,54 +173,56 @@ bool ClientCom::resetConnect(const QString &ip_in,int port_in)
         this->tcpSocket->close();
     }
     QHostAddress hostAddress(this->ip);
-    this->timer->start();
+    this->connectTimer->start();
     return true;
 }
-void ClientCom::changeCtronller(int index)
+
+// 定时器命令
+void CommunicationController::checkSlaveConnectCommand()
+{
+    QJsonObject jsonObject;
+    this->sendMessages(Ask_SlaveConnect, QString(QJsonDocument(jsonObject).toJson()));
+}
+
+// 操作命令
+void CommunicationController::initializeParamCommand()
+{
+    QJsonObject jsonObject;
+    this->sendMessages(Start, QString(QJsonDocument(jsonObject).toJson()));
+}
+void CommunicationController::changeControllerCommand(int index)
 {
     QJsonObject jsonObject;
     jsonObject["controlLaw"] = index;
     //json to qstring
     this->sendMessages(Request_ChangeController, QString(QJsonDocument(jsonObject).toJson()));
 }
-void ClientCom::changePlanner(int index)
+void CommunicationController::changePlannerCommand(int index)
 {
     QJsonObject jsonObject;
     jsonObject["planner"] = index;
     //json to qstring
     this->sendMessages(Request_ChangePlanner, QString(QJsonDocument(jsonObject).toJson()));
 }
-void ClientCom::changeVel(int runVel, int jogVel)
+void CommunicationController::changeVelocityCommand(int runVel, int jogVel)
 {
     QJsonObject jsonObject;
     jsonObject["runSpeed"] = runVel;
     jsonObject["jogspeed"] = jogVel;
     this->sendMessages(Request_ChangeVel, QString(QJsonDocument(jsonObject).toJson()));
 }
-void ClientCom::checkSlaveConnect()
-{
-    QJsonObject jsonObject;
-    this->sendMessages(Ask_SlaveConnect, QString(QJsonDocument(jsonObject).toJson()));
-}
-void ClientCom::initialInformationInquiry()
-{
-    QJsonObject jsonObject;
-    this->sendMessages(Start, QString(QJsonDocument(jsonObject).toJson()));
-}
-void ClientCom::backToZero()
+void CommunicationController::backToZeroCommand()
 {
     QJsonObject jsonObject;
     this->sendMessages(Request_BackToZero, QString(QJsonDocument(jsonObject).toJson()));
 }
-void ClientCom::stopMove()
+void CommunicationController::stopMoveCommand()
 {
     QJsonObject jsonObject;
     this->sendMessages(Request_StopMove, QString(QJsonDocument(jsonObject).toJson()));
 }
-void ClientCom::getPosition()
+void CommunicationController::getPositionCommand()
 {
-    //static int i = 0;
-    //i++;
     QJsonObject jsonObject;
     this->sendMessages(Ask_Position, QString(QJsonDocument(jsonObject).toJson()));
 }
