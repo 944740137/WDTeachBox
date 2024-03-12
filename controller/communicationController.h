@@ -51,8 +51,8 @@ public:
     void sendMessages(uint16_t num, const QString &messages);
 
     // 操作命令
-    void initializeParamCommand();// 初始化示教器值
-    void changeControllerCommand(int index);    // 切换速度，规控
+    void initializeParamCommand();// 初始化示教器值命令
+    void changeControllerCommand(int index);
     void changePlannerCommand(int index);
     void changeVelocityCommand(int runVel,int jogVel);
     void backToZeroCommand();

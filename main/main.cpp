@@ -4,8 +4,6 @@
 
 #include <QApplication>
 #include <QCoreApplication>
-#include <QDebug>
-
 
 int main(int argc, char *argv[])
 {
@@ -18,7 +16,7 @@ int main(int argc, char *argv[])
 
     // 其他线程（debug）
 
-    // 加载参数
+    // 加载配置参数
     QJsonObject jsonObject;
     getJsonObjectFromFile(TeachBoxJsonPath, jsonObject);
     Config config(jsonObject["ControllerIP"].toString(), jsonObject["Port"].toInt());
@@ -28,5 +26,6 @@ int main(int argc, char *argv[])
     MainWindow w(config, ui);
     w.show();
 
+    // QApplication
     return a.exec();
 }

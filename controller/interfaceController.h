@@ -2,7 +2,6 @@
 #define InterfaceController_H
 #include "config.h"
 #include "controller/communicationController.h"
-#include <QDebug>
 #include <QTimer>
 #include <QMainWindow>
 #include <QListWidgetItem>
@@ -18,8 +17,6 @@ class InterfaceController:public QObject
 private:
     Ui::MainWindow *ui;
 
-    QTimer *askPosTimer;
-
 public:
     ~InterfaceController();
     InterfaceController(const Config &config, Ui::MainWindow *ui, QWidget *parent = nullptr);
@@ -27,7 +24,11 @@ public:
     InterfaceController(const InterfaceController &) = delete;
     void operator=(const InterfaceController &) = delete;
 
+    // 交互处理逻辑
     void functionPageSwitching(QListWidgetItem *current, QListWidgetItem *previous, CommunicationController *communicationController);
+    void setIPandPort(bool checked, CommunicationController *communicationController);
+    void changeVelocity(VelocityType velocityType, bool isPlus, CommunicationController *communicationController);
+
 private slots:
 
 };

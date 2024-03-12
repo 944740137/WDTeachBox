@@ -1,7 +1,6 @@
 #include <QDebug>
-#include "controller/communicationController.h"
 #include "json/json.h"
-#include "config.h"
+#include "controller/communicationController.h"
 #include "protocol.h"
 
 CommunicationController::~CommunicationController()
@@ -187,6 +186,11 @@ void CommunicationController::checkSlaveConnectCommand()
     QJsonObject jsonObject;
     this->sendMessages(Ask_SlaveConnect, QString(QJsonDocument(jsonObject).toJson()));
 }
+void CommunicationController::getPositionCommand()
+{
+    QJsonObject jsonObject;
+    this->sendMessages(Ask_Position, QString(QJsonDocument(jsonObject).toJson()));
+}
 
 // 操作命令
 void CommunicationController::initializeParamCommand()
@@ -225,9 +229,4 @@ void CommunicationController::stopMoveCommand()
     QJsonObject jsonObject;
     this->sendMessages(Request_StopMove, QString(QJsonDocument(jsonObject).toJson()));
 }
-void CommunicationController::getPositionCommand()
-{
-    qDebug()<<"getPositionCommand"<<endl;
-    QJsonObject jsonObject;
-    this->sendMessages(Ask_Position, QString(QJsonDocument(jsonObject).toJson()));
-}
+

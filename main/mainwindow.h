@@ -27,38 +27,22 @@ public:
     MainWindow(const MainWindow &) = delete;
     void operator=(const MainWindow &) = delete;
 
-    // 网络
-    void resetNetConfigInterface();
-
-    // 速度
-    void setVel();
-    void velUp(int &vel);
-    void velDown(int &vel);
-
 private slots:
-
-    //功能列表
+    // 功能表切换
     void on_fun_ListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-
-    //网络
+    // ip端口设置按钮
     void on_setNet_Btn_toggled(bool checked);
-
-    //归控切换
+    // 规控切换组合框
     void on_ctr_ComboBox_activated(int index);
     void on_plan_ComboBox_activated(int index);
-
-    //速度
+    // 速度增减按钮
     void on_jogVel_Btn2_clicked();
     void on_jogVel_Btn1_clicked();
     void on_runVel_Btn_clicked();
     void on_runVel_Btn_2_clicked();
-
-    //按钮类
+    // 功能按钮
     void on_backZero_Btn_clicked();
     void on_stop_Btn_clicked();
-
-    //
-    void getPosition();
 
 };
 #endif // MAINWINDOW_H

@@ -10,5 +10,10 @@ struct Config
     QString ip;
     int port;
 };
+enum VelocityType
+{
+    jogVelocity = 0,
+    runVelocity = 1
+};
 
 #endif // CONFIG_H
