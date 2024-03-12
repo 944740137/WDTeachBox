@@ -7,7 +7,7 @@
 #include <QTcpSocket>
 #include <QTimer>
 
-#include "ui_mainwindow.h"
+#include "ui_teachBox.h"
 
 struct TcpMessage
 {

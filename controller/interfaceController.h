@@ -6,7 +6,7 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 
-#include "ui_mainwindow.h"
+#include "ui_teachBox.h"
 
 class InterfaceController:public QObject
 {

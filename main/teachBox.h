@@ -12,7 +12,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
+class TeachBox : public QMainWindow
 {
     Q_OBJECT
 private:
@@ -21,11 +21,11 @@ private:
     CommunicationController *communicationController;
 
 public:
-    ~MainWindow();
-    MainWindow(const Config &config, Ui::MainWindow *ui, QWidget *parent = nullptr);
-    MainWindow() = delete;
-    MainWindow(const MainWindow &) = delete;
-    void operator=(const MainWindow &) = delete;
+    ~TeachBox();
+    TeachBox(const Config &config, Ui::MainWindow *ui, QWidget *parent = nullptr);
+    TeachBox() = delete;
+    TeachBox(const TeachBox &) = delete;
+    void operator=(const TeachBox &) = delete;
 
 private slots:
     // 功能表切换

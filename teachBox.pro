@@ -20,7 +20,7 @@ SOURCES += \
     controller/interfaceController.cpp \
     json/json.cpp \
     main/main.cpp \
-    main/mainwindow.cpp \
+    main/teachBox.cpp \
     message/message.cpp \
 
 
@@ -29,14 +29,14 @@ HEADERS += \
     controller/interfaceController.h \
     config.h \
     json/json.h \
-    main/mainwindow.h \ \
+    main/teachBox.h \
     message/message.h \ \
     protocol.h
 
 
 
 FORMS += \
-    mainwindow.ui
+    teachBox.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

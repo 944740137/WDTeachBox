@@ -1,5 +1,5 @@
 #include "config.h"
-#include "mainwindow.h"
+#include "teachBox.h"
 #include "json/json.h"
 
 #include <QApplication>
@@ -23,8 +23,8 @@ int main(int argc, char *argv[])
 
     // 界面任务线程
     Ui::MainWindow *ui = new Ui::MainWindow();
-    MainWindow w(config, ui);
-    w.show();
+    TeachBox teachBox(config, ui);
+    teachBox.show();
 
     // QApplication
     return a.exec();
