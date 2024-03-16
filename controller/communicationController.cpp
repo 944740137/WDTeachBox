@@ -1,4 +1,4 @@
-#include <QDebug>
+﻿#include <QDebug>
 #include "json/json.h"
 #include "controller/communicationController.h"
 #include "h/protocol.h"
@@ -74,9 +74,7 @@ void CommunicationController::receiveMessages()
         this->responseSlaveConnect(jsonDocument["connect"].toBool());
         break;
     case Response_Start: // 示教器开机初始化
-        this->responseStart(jsonDocument["connect"].toBool(), jsonDocument["controlLaw"].toInt(),
-                jsonDocument["planner"].toInt(), jsonDocument["runSpeed"].toInt(),
-                jsonDocument["jogspeed"].toInt(), "panda");
+        this->responseStart(jsonDocument["connect"].toBool(), jsonDocument["controlLaw"].toInt(), jsonDocument["planner"].toInt(), jsonDocument["runSpeed"].toInt(), jsonDocument["jogspeed"].toInt(), "panda");
         break;
     case Response_ChangeVel: // 修改速度
         this->responseChangeVel(jsonDocument["result"].toBool());

@@ -93,10 +93,7 @@ void InterfaceController::functionPageSwitching(QListWidgetItem *current, QListW
 
     // 进入运行界面:启动查询位置定时器位置
     if(current->text()=="运行")
-    {
-        this->initTaskData(this->referenceManager->robotType);
         communicationController->askPosTimer->start(500);//500ms
-    }
     else
         communicationController->askPosTimer->stop();
 
@@ -181,25 +178,23 @@ void InterfaceController::changeMoveGoal(int index, bool checked)
         {
             this->referenceManager->jointRunningQueueGroup[index - 1][i]->setEnabled(false);
         }
+
+        QJsonObject robotJsonObject;
+        QJsonObject taskJsonObject;
+        QJsonArray bearArray[7];
+        QList<QString> position = {"q1","q2","q3","q4","q5","q6"};
+        for (int i = 0; i < position.size(); i++)
+        {
+            for (int j = 0; j < this->referenceManager->jointRunningQueueGroup[i].size(); j++)
+            {
+                bearArray[i].append(this->referenceManager->jointRunningQueueGroup[i][j]->text().toDouble());
+            }
+            robotJsonObject[position[i]] = bearArray[i];
+        }
+        taskJsonObject["panda"] = robotJsonObject;
+        setJsonObjectToFile(TaskJsonPath, taskJsonObject);
     }
 
 }
-void InterfaceController::initTaskData(RobotType robotType)
-{
-    QJsonObject taskJsonObject;
-    getJsonObjectFromFile(TaskJsonPath, taskJsonObject);
-    QJsonDocument taskJsonDocument(taskJsonObject);
-    if(robotType == RobotType::panda)
-    {
-        for (int i = 0; i < this->referenceManager->jointRunningQueueGroup[0].size(); i++)
-        {
-            this->referenceManager->jointRunningQueueGroup[0][i]->setText(QString::number(taskJsonDocument["panda"]["q1"][i].toDouble()));
-            this->referenceManager->jointRunningQueueGroup[1][i]->setText(QString::number(taskJsonDocument["panda"]["q2"][i].toDouble()));
-            this->referenceManager->jointRunningQueueGroup[2][i]->setText(QString::number(taskJsonDocument["panda"]["q3"][i].toDouble()));
-            this->referenceManager->jointRunningQueueGroup[3][i]->setText(QString::number(taskJsonDocument["panda"]["q4"][i].toDouble()));
-            this->referenceManager->jointRunningQueueGroup[4][i]->setText(QString::number(taskJsonDocument["panda"]["q5"][i].toDouble()));
-            this->referenceManager->jointRunningQueueGroup[5][i]->setText(QString::number(taskJsonDocument["panda"]["q6"][i].toDouble()));
-        }
-    }
-}
+
 

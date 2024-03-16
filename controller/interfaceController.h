@@ -30,7 +30,6 @@ public:
     void setIPandPort(bool checked, CommunicationController *communicationController);
     void changeVelocity(VelocityType velocityType, bool isPlus, CommunicationController *communicationController);
     void changeMoveGoal(int index, bool checked);
-    void initTaskData(RobotType robotType);
 
 private slots:
 

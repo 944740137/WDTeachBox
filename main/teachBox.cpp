@@ -110,7 +110,6 @@ void TeachBox::on_runQueue_enable_Btn61_clicked()
 // 运行页面：保存按钮
 void TeachBox::on_runQueue_enable_Btn13_toggled(bool checked)
 {
-    qDebug()<<"1111"<<endl;
     this->interfaceController->changeMoveGoal(1, checked);
 }
 void TeachBox::on_runQueue_enable_Btn23_toggled(bool checked)
