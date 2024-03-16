@@ -1,11 +1,13 @@
 #ifndef CommunicationController_H
 #define CommunicationController_H
-#include "config.h"
+#include "h/config.h"
 
 #include <QDebug>
 #include <QHostAddress>
 #include <QTcpSocket>
 #include <QTimer>
+
+#include "manager/referenceManager.h"
 
 #include "ui_teachBox.h"
 
@@ -22,9 +24,10 @@ class CommunicationController:public QObject
 
     friend class MainWindow;
     friend class InterfaceController;
-private:
 
+private:
     Ui::MainWindow *ui;
+    ReferenceManager *referenceManager;
 
     //从站状态查询定时器
     QTimer *checkoutSlaveTimer;
@@ -41,7 +44,7 @@ private:
 
 public:
     ~CommunicationController();
-    CommunicationController(const Config &config, Ui::MainWindow *ui, QWidget *parent = nullptr);
+    CommunicationController(const Config &config, ReferenceManager *referenceManager, Ui::MainWindow *ui, QWidget *parent = nullptr);
     CommunicationController()= delete;
     CommunicationController(const CommunicationController &) = delete;
     void operator=(const CommunicationController &) = delete;
@@ -50,6 +53,10 @@ public:
     bool resetConnect(const QString &ip_in,int port);
     void sendMessages(uint16_t num, const QString &messages);
 
+    // 操作类：按照控制器返回值操作
+
+    // 运行命令
+    void startMoveCommand(PlanType planType, int queueNumber);
     // 操作命令
     void initializeParamCommand();// 初始化示教器值命令
     void changeControllerCommand(int index);

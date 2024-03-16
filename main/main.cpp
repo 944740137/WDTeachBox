@@ -1,4 +1,4 @@
-#include "config.h"
+#include "h/config.h"
 #include "teachBox.h"
 #include "json/json.h"
 
@@ -17,9 +17,9 @@ int main(int argc, char *argv[])
     // 其他线程（debug）
 
     // 加载配置参数
-    QJsonObject jsonObject;
-    getJsonObjectFromFile(TeachBoxJsonPath, jsonObject);
-    Config config(jsonObject["ControllerIP"].toString(), jsonObject["Port"].toInt());
+    QJsonObject configJsonObject;
+    getJsonObjectFromFile(TeachBoxJsonPath, configJsonObject);
+    Config config(configJsonObject["ControllerIP"].toString(), configJsonObject["Port"].toInt());
 
     // 界面任务线程
     Ui::MainWindow *ui = new Ui::MainWindow();

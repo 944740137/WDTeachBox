@@ -3,6 +3,12 @@
 #include <QString>
 
 #define  TeachBoxJsonPath "/home/wd/workSpace/WDcontroller/config/teachBox.json"
+#define  TaskJsonPath "/home/wd/workSpace/WDcontroller/config/task.json"
+
+struct Task
+{
+    double data[6][7] = {0}; //6*7
+};
 
 struct Config
 {
@@ -15,5 +21,14 @@ enum VelocityType
     jogVelocity = 0,
     runVelocity = 1
 };
-
+enum PlanType
+{
+    joint = 0,
+    cartesian = 1
+};
+enum RobotType
+{
+    panda = 0,
+    ur = 1
+};
 #endif // CONFIG_H

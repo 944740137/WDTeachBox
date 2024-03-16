@@ -7,13 +7,18 @@ TeachBox::TeachBox(const Config &config, Ui::MainWindow *ui, QWidget *parent)
     , ui(ui)
 {
     ui->setupUi(this);
-    this->communicationController = new CommunicationController(config, ui);
-    this->interfaceController = new InterfaceController(config, ui);
+    this->referenceManager = new ReferenceManager(ui);
+    this->communicationController = new CommunicationController(config, this->referenceManager, ui);
+    this->interfaceController = new InterfaceController(config, this->referenceManager, ui);
+
 }
 TeachBox::~TeachBox()
 {
     delete ui;
     delete communicationController;
+    delete interfaceController;
+    if(referenceManager!=nullptr)
+        delete referenceManager;
 }
 
 // 功能表切换
@@ -51,6 +56,82 @@ void TeachBox::on_runVel_Btn_clicked()
 void TeachBox::on_runVel_Btn_2_clicked()
 {
     this->interfaceController->changeVelocity(VelocityType::runVelocity, false, this->communicationController);
+}
+// 运行页面：运行按钮
+void TeachBox::on_runQueue_enable_Btn12_clicked()
+{
+    this->communicationController->startMoveCommand(PlanType::joint, 1);
+}
+void TeachBox::on_runQueue_enable_Btn22_clicked()
+{
+    this->communicationController->startMoveCommand(PlanType::joint, 2);
+}
+void TeachBox::on_runQueue_enable_Btn32_clicked()
+{
+    this->communicationController->startMoveCommand(PlanType::joint, 3);
+}
+void TeachBox::on_runQueue_enable_Btn42_clicked()
+{
+    this->communicationController->startMoveCommand(PlanType::joint, 4);
+}
+void TeachBox::on_runQueue_enable_Btn52_clicked()
+{
+    this->communicationController->startMoveCommand(PlanType::joint, 5);
+}
+void TeachBox::on_runQueue_enable_Btn62_clicked()
+{
+    this->communicationController->startMoveCommand(PlanType::joint, 6);
+}
+// 运行页面：示教按钮
+void TeachBox::on_runQueue_enable_Btn11_clicked()
+{
+
+}
+void TeachBox::on_runQueue_enable_Btn21_clicked()
+{
+
+}
+void TeachBox::on_runQueue_enable_Btn31_clicked()
+{
+
+}
+void TeachBox::on_runQueue_enable_Btn41_clicked()
+{
+
+}
+void TeachBox::on_runQueue_enable_Btn51_clicked()
+{
+
+}
+void TeachBox::on_runQueue_enable_Btn61_clicked()
+{
+
+}
+// 运行页面：保存按钮
+void TeachBox::on_runQueue_enable_Btn13_toggled(bool checked)
+{
+    qDebug()<<"1111"<<endl;
+    this->interfaceController->changeMoveGoal(1, checked);
+}
+void TeachBox::on_runQueue_enable_Btn23_toggled(bool checked)
+{
+    this->interfaceController->changeMoveGoal(2, checked);
+}
+void TeachBox::on_runQueue_enable_Btn33_toggled(bool checked)
+{
+    this->interfaceController->changeMoveGoal(3, checked);
+}
+void TeachBox::on_runQueue_enable_Btn43_toggled(bool checked)
+{
+    this->interfaceController->changeMoveGoal(4, checked);
+}
+void TeachBox::on_runQueue_enable_Btn53_toggled(bool checked)
+{
+    this->interfaceController->changeMoveGoal(5, checked);
+}
+void TeachBox::on_runQueue_enable_Btn63_toggled(bool checked)
+{
+    this->interfaceController->changeMoveGoal(6, checked);
 }
 // 功能按钮类
 void TeachBox::on_backZero_Btn_clicked()

@@ -18,20 +18,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     controller/communicationController.cpp \
     controller/interfaceController.cpp \
+    manager/messageManager.cpp \
+    manager/referenceManager.cpp \
     json/json.cpp \
     main/main.cpp \
-    main/teachBox.cpp \
-    message/message.cpp \
+    main/teachBox.cpp
+
 
 
 HEADERS += \
     controller/communicationController.h \
     controller/interfaceController.h \
-    config.h \
+    manager/messageManager.h \
+    manager/referenceManager.h \
     json/json.h \
     main/teachBox.h \
-    message/message.h \ \
-    protocol.h
+    h/config.h \
+    h/protocol.h
+
 
 
 

@@ -24,4 +24,7 @@
 
 #define Ask_Position 1115
 #define Response_Position 1116
+
+#define Request_CreateRunTask 1121
+#define Response_CreateRunTask 1122
 #endif // PROTOCOL_H

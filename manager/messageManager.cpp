@@ -1,4 +1,4 @@
-#include "message.h"
+#include "messageManager.h"
 #include <QMessageBox>
 
 

@@ -1,14 +1,12 @@
 #include <QDebug>
-#include "message/message.h"
 #include "controller/interfaceController.h"
-
-
+#include "json/json.h"
 
 InterfaceController::~InterfaceController()
 {
 }
-InterfaceController::InterfaceController(const Config &config, Ui::MainWindow *ui, QWidget *parent)
-    :ui(ui)
+InterfaceController::InterfaceController(const Config &config, ReferenceManager *referenceManager, Ui::MainWindow *ui, QWidget *parent)
+    :ui(ui),referenceManager(referenceManager)
 {
     // 网络设置初始化与输入约束设置
     ui->IP_LineEdit->setText(config.ip);
@@ -29,6 +27,37 @@ InterfaceController::InterfaceController(const Config &config, Ui::MainWindow *u
     ui->netStatus_Label->setText("主站断开");
     ui->slaveStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
     ui->slaveStatus_Label->setText("从站掉线");
+
+    // 运行界面：目标位置输入约束
+    for(int i =0; i<this->referenceManager->jointRunningQueueGroup.size();i++)
+    {
+        for(int j =0; j<referenceManager->jointRunningQueueGroup[0].size();j++)
+        {
+            this->referenceManager->jointRunningQueueGroup[i][j]->setValidator(new QIntValidator(this->referenceManager->jointRunningQueueGroup[i][j]));
+            this->referenceManager->jointRunningQueueGroup[i][j]->setValidator(new QRegExpValidator(QRegExp("^-?((1[0-7]\\d(\\.\\d{1,2})?)|180(\\.0{1,2})?|\\d{1,2}(\\.\\d{1,2})?)$")));
+        }
+    }
+    for(int i =0; i<this->referenceManager->cartesianRunningQueueGroup.size();i++)
+    {
+        for(int j =0; j<3; j++)
+        {
+            this->referenceManager->cartesianRunningQueueGroup[i][j]->setValidator(new QIntValidator(this->referenceManager->cartesianRunningQueueGroup[i][j]));
+            this->referenceManager->cartesianRunningQueueGroup[i][j]->setValidator(new QRegExpValidator(QRegExp("^-?([01](\.\d{1,4})?|1(\.0{1,4})?|-1(\.[0-5]{1,4})?)$")));
+        }
+        for(int j =3; j<6; j++)
+        {
+            this->referenceManager->cartesianRunningQueueGroup[i][j]->setValidator(new QIntValidator(this->referenceManager->cartesianRunningQueueGroup[i][j]));
+            this->referenceManager->cartesianRunningQueueGroup[i][j]->setValidator(new QRegExpValidator(QRegExp("^-?((1[0-7]\\d(\\.\\d{1,2})?)|180(\\.0{1,2})?|\\d{1,2}(\\.\\d{1,2})?)$")));
+        }
+    }
+    // 运行界面：修改点位
+    for(int i =0; i < this->referenceManager->runPageChangeMoveGoal.size();i++)
+    {
+        this->referenceManager->runPageChangeMoveGoal[i]->setText("修改");
+        this->referenceManager->runPageChangeMoveGoal[i]->setCheckable(true);
+        for (int j = 0; j < this->referenceManager->jointRunningQueueGroup[0].size(); j++)
+            this->referenceManager->jointRunningQueueGroup[i][j]->setEnabled(false);
+    }
 }
 
 // 交互处理逻辑
@@ -37,6 +66,7 @@ void InterfaceController::functionPageSwitching(QListWidgetItem *current, QListW
     if(previous==nullptr)
         return;
 
+    // 离开设置界面:重置未保存数据
     if(previous->text()=="设置" && current->text()!="设置")
     {
         ui->IP_LineEdit->setText(communicationController->ip);
@@ -47,9 +77,26 @@ void InterfaceController::functionPageSwitching(QListWidgetItem *current, QListW
         ui->port_LineEdit->setEnabled(false);
     }
 
-    // 进入运行界面启动查询位置定时器位置
+    // 离开运行界面:重置未保存数据
+    if(previous->text()=="运行" && current->text()!="运行")
+    {
+        for(int i =0; i < this->referenceManager->runPageChangeMoveGoal.size();i++)
+        {
+            this->referenceManager->runPageChangeMoveGoal[i]->setText("修改");
+            this->referenceManager->runPageChangeMoveGoal[i]->setChecked(false);
+            for (int j = 0; j < this->referenceManager->jointRunningQueueGroup[0].size(); j++)
+            {
+                this->referenceManager->jointRunningQueueGroup[i][j]->setEnabled(false);
+            }
+        }
+    }
+
+    // 进入运行界面:启动查询位置定时器位置
     if(current->text()=="运行")
+    {
+        this->initTaskData(this->referenceManager->robotType);
         communicationController->askPosTimer->start(500);//500ms
+    }
     else
         communicationController->askPosTimer->stop();
 
@@ -70,6 +117,7 @@ void InterfaceController::setIPandPort(bool checked, CommunicationController *co
         if(ip.count('.')!=3 || port.isEmpty() ||ip.right(1)=="." )
         {
 //            messageAbout(this, IP_ERROR); // todo:增加message类
+            qDebug()<<"[------] error IP_ERROR";
             ui->IP_LineEdit->setText(communicationController->ip);
             ui->port_LineEdit->setText(QString::number(communicationController->port));
             ui->setNet_Btn->setChecked(false);
@@ -115,3 +163,43 @@ void InterfaceController::changeVelocity(VelocityType velocityType, bool isPlus,
     int runVel = ui->runVel_lab_2->text().toInt();
     communicationController->changeVelocityCommand(runVel, jogVel);
 }
+void InterfaceController::changeMoveGoal(int index, bool checked)
+{
+    if(checked)
+    {
+        this->referenceManager->runPageChangeMoveGoal[index - 1]->setText("确定");
+        for(int i =0; i < this->referenceManager->jointRunningQueueGroup[0].size(); i++)
+        {
+            this->referenceManager->jointRunningQueueGroup[index - 1][i]->setEnabled(true);
+        }
+    }
+    else
+    {
+        // 按下确定
+        this->referenceManager->runPageChangeMoveGoal[index - 1]->setText("修改");
+        for(int i =0; i < this->referenceManager->jointRunningQueueGroup[0].size(); i++)
+        {
+            this->referenceManager->jointRunningQueueGroup[index - 1][i]->setEnabled(false);
+        }
+    }
+
+}
+void InterfaceController::initTaskData(RobotType robotType)
+{
+    QJsonObject taskJsonObject;
+    getJsonObjectFromFile(TaskJsonPath, taskJsonObject);
+    QJsonDocument taskJsonDocument(taskJsonObject);
+    if(robotType == RobotType::panda)
+    {
+        for (int i = 0; i < this->referenceManager->jointRunningQueueGroup[0].size(); i++)
+        {
+            this->referenceManager->jointRunningQueueGroup[0][i]->setText(QString::number(taskJsonDocument["panda"]["q1"][i].toDouble()));
+            this->referenceManager->jointRunningQueueGroup[1][i]->setText(QString::number(taskJsonDocument["panda"]["q2"][i].toDouble()));
+            this->referenceManager->jointRunningQueueGroup[2][i]->setText(QString::number(taskJsonDocument["panda"]["q3"][i].toDouble()));
+            this->referenceManager->jointRunningQueueGroup[3][i]->setText(QString::number(taskJsonDocument["panda"]["q4"][i].toDouble()));
+            this->referenceManager->jointRunningQueueGroup[4][i]->setText(QString::number(taskJsonDocument["panda"]["q5"][i].toDouble()));
+            this->referenceManager->jointRunningQueueGroup[5][i]->setText(QString::number(taskJsonDocument["panda"]["q6"][i].toDouble()));
+        }
+    }
+}
+
