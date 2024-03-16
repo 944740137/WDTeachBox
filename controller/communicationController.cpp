@@ -64,100 +64,30 @@ void CommunicationController::receiveMessages()
     QJsonDocument jsonDocument = QJsonDocument::fromJson(str_data.toLocal8Bit().data());//string 转 json
     switch (this->tcpRecvMessage.commandNum)
     {
-        // 更换控制器
-        case Response_ChangeController:
-        {
-            if(!jsonDocument["result"].toBool())
-            {
-                qDebug()<<jsonDocument["error"].toString();
-            }
-            ui->ctr_ComboBox->setCurrentIndex(jsonDocument["controlLaw"].toInt());
-        }
+    case Response_ChangeController: // 更换控制器
+        this->responseChangeController(jsonDocument["result"].toBool(),jsonDocument["controlLaw"].toInt());
         break;
-        // 更换规划器
-        case Response_ChangePlanner:
-        {
-            if(!jsonDocument["result"].toBool())
-            {
-                qDebug()<<jsonDocument["error"].toString();
-            }
-            ui->ctr_ComboBox->setCurrentIndex(jsonDocument["planner"].toInt());
-        }
+    case Response_ChangePlanner: // 更换规划器
+        this->responseChangePlanner(jsonDocument["result"].toBool(),jsonDocument["planner"].toInt());
         break;
-            // 询问从站状态
-        case Response_SlaveConnect:
-            if(jsonDocument["connect"].toBool())
-            {
-                ui->slaveStatus_Label->setStyleSheet("background-color: rgb(37,231,18)");
-                ui->slaveStatus_Label->setText("从站在线");
-            }
-            else
-            {
-                ui->slaveStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
-                ui->slaveStatus_Label->setText("从站掉线");
-            }
-            break;
-            // 示教器开机初始化
-        case Response_Start:
-        {
-
-            if(jsonDocument["connect"].toBool())
-            {
-                ui->slaveStatus_Label->setStyleSheet("background-color: rgb(37,231,18)");
-                ui->slaveStatus_Label->setText("从站在线");
-            }
-            else
-            {
-                ui->slaveStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
-                ui->slaveStatus_Label->setText("从站掉线");
-            }
-            ui->ctr_ComboBox->setCurrentIndex(jsonDocument["controlLaw"].toInt());
-            ui->plan_ComboBox->setCurrentIndex(jsonDocument["planner"].toInt());
-            ui->runVel_lab_2->setText(QString::number(jsonDocument["runSpeed"].toInt()));
-            ui->jogVel_lab_2->setText(QString::number(jsonDocument["jogspeed"].toInt()));
-            QJsonObject taskJsonObject;
-            getJsonObjectFromFile(TaskJsonPath, taskJsonObject);
-            QJsonDocument taskJsonDocument(taskJsonObject);
-            for (int i = 0; i < this->referenceManager->jointRunningQueueGroup[0].size(); i++)
-            {
-                this->referenceManager->jointRunningQueueGroup[0][i]->setText(QString::number(taskJsonDocument["panda"]["q1"][i].toDouble()));
-                this->referenceManager->jointRunningQueueGroup[1][i]->setText(QString::number(taskJsonDocument["panda"]["q2"][i].toDouble()));
-                this->referenceManager->jointRunningQueueGroup[2][i]->setText(QString::number(taskJsonDocument["panda"]["q3"][i].toDouble()));
-                this->referenceManager->jointRunningQueueGroup[3][i]->setText(QString::number(taskJsonDocument["panda"]["q4"][i].toDouble()));
-                this->referenceManager->jointRunningQueueGroup[4][i]->setText(QString::number(taskJsonDocument["panda"]["q5"][i].toDouble()));
-                this->referenceManager->jointRunningQueueGroup[5][i]->setText(QString::number(taskJsonDocument["panda"]["q6"][i].toDouble()));
-            }
-        }
-            break;
-            // 修改速度
-        case Response_ChangeVel:
-        {
-
-            if(jsonDocument["result"].toBool())
-            {
-            }
-        }
-            // 回零
-        case Response_BackToZero:
-            if(jsonDocument["result"].toBool())
-            {
-            }
-            break;
-            // 查询位置
-        case Response_Position:
-            if(jsonDocument["result"].toBool())
-            {
-                for (int i = 0; i < 7; ++i)
-                {
-                    this->referenceManager->runPageNowJointPosition[i]->setText(QString::number(jsonDocument["q"][i].toDouble(),'f', 2));
-                }
-                for (int i = 0; i < 6; ++i)
-                {
-                    this->referenceManager->runPageNowCartesianPosition[i]->setText(QString::number(jsonDocument["X"][i].toDouble(),'f', 2));
-                }
-            }
-        default:
-            break;
+    case Response_SlaveConnect: // 询问从站状态
+        this->responseSlaveConnect(jsonDocument["connect"].toBool());
+        break;
+    case Response_Start: // 示教器开机初始化
+        this->responseStart(jsonDocument["connect"].toBool(), jsonDocument["controlLaw"].toInt(),
+                jsonDocument["planner"].toInt(), jsonDocument["runSpeed"].toInt(),
+                jsonDocument["jogspeed"].toInt(), "panda");
+        break;
+    case Response_ChangeVel: // 修改速度
+        this->responseChangeVel(jsonDocument["result"].toBool());
+        break;
+    case Response_BackToZero: // 回零
+        this->responseBackToZero(jsonDocument["result"].toBool());
+        break;
+    case Response_Position: // 查询位置
+        this->responsePosition(jsonDocument["result"].toBool(), jsonDocument);
+    default:
+        break;
     }
     memset(this->tcpRecvMessage.data, 0, sizeof(this->tcpRecvMessage.data));
 }
@@ -207,7 +137,6 @@ void CommunicationController::getPositionCommand()
     QJsonObject jsonObject;
     this->sendMessages(Ask_Position, QString(QJsonDocument(jsonObject).toJson()));
 }
-
 // 操作命令
 void CommunicationController::initializeParamCommand()
 {
@@ -282,3 +211,77 @@ void CommunicationController::startMoveCommand(PlanType planType, int queueNumbe
     }
     this->sendMessages(Request_CreateRunTask, QString(QJsonDocument(jsonObject).toJson()));
 }
+
+//回应
+void CommunicationController::responseChangeController(bool result, int controlLaw)
+{
+    //    if(result)
+    this->ui->ctr_ComboBox->setCurrentIndex(controlLaw);
+}
+void CommunicationController::responseChangePlanner(bool result, int planner)
+{
+    //    if(result)
+    this->ui->plan_ComboBox->setCurrentIndex(planner);
+}
+void CommunicationController::responseSlaveConnect(bool isConnect)
+{
+    if(isConnect)
+    {
+        this->ui->slaveStatus_Label->setStyleSheet("background-color: rgb(37,231,18)");
+        this->ui->slaveStatus_Label->setText("从站在线");
+    }
+    else
+    {
+        this->ui->slaveStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
+        this->ui->slaveStatus_Label->setText("从站掉线");
+    }
+}
+void CommunicationController::responseStart(bool isConnect, int controlLaw, int planner, int runSpeed, int jogspeed, QString robotType)
+{
+    if(isConnect)
+    {
+        this->ui->slaveStatus_Label->setStyleSheet("background-color: rgb(37,231,18)");
+        this->ui->slaveStatus_Label->setText("从站在线");
+    }
+    else
+    {
+        this->ui->slaveStatus_Label->setStyleSheet("background-color: rgb(255,0,0)");
+        this->ui->slaveStatus_Label->setText("从站掉线");
+    }
+    this->ui->ctr_ComboBox->setCurrentIndex(controlLaw);
+    this->ui->plan_ComboBox->setCurrentIndex(planner);
+    this->ui->runVel_lab_2->setText(QString::number(runSpeed));
+    this->ui->jogVel_lab_2->setText(QString::number(jogspeed));
+    QJsonObject taskJsonObject;
+    getJsonObjectFromFile(TaskJsonPath, taskJsonObject);
+    QJsonDocument taskJsonDocument(taskJsonObject);
+    for (int i = 0; i < this->referenceManager->jointRunningQueueGroup[0].size(); i++)
+    {
+        this->referenceManager->jointRunningQueueGroup[0][i]->setText(QString::number(taskJsonDocument[robotType]["q1"][i].toDouble()));
+        this->referenceManager->jointRunningQueueGroup[1][i]->setText(QString::number(taskJsonDocument[robotType]["q2"][i].toDouble()));
+        this->referenceManager->jointRunningQueueGroup[2][i]->setText(QString::number(taskJsonDocument[robotType]["q3"][i].toDouble()));
+        this->referenceManager->jointRunningQueueGroup[3][i]->setText(QString::number(taskJsonDocument[robotType]["q4"][i].toDouble()));
+        this->referenceManager->jointRunningQueueGroup[4][i]->setText(QString::number(taskJsonDocument[robotType]["q5"][i].toDouble()));
+        this->referenceManager->jointRunningQueueGroup[5][i]->setText(QString::number(taskJsonDocument[robotType]["q6"][i].toDouble()));
+    }
+}
+void CommunicationController::responseChangeVel(bool result)
+{
+
+}
+void CommunicationController::responseBackToZero(bool result)
+{
+
+}
+void CommunicationController::responsePosition(bool result, QJsonDocument &jsonDocument)
+{
+    for (int i = 0; i < 7; ++i)
+    {
+        this->referenceManager->runPageNowJointPosition[i]->setText(QString::number(jsonDocument["q"][i].toDouble(),'f', 2));
+    }
+    for (int i = 0; i < 6; ++i)
+    {
+        this->referenceManager->runPageNowCartesianPosition[i]->setText(QString::number(jsonDocument["X"][i].toDouble(),'f', 2));
+    }
+}
+

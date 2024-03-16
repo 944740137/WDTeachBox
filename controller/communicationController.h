@@ -10,7 +10,6 @@
 #include "manager/referenceManager.h"
 
 #include "ui_teachBox.h"
-
 struct TcpMessage
 {
     uint16_t commandNum;
@@ -53,8 +52,6 @@ public:
     bool resetConnect(const QString &ip_in,int port);
     void sendMessages(uint16_t num, const QString &messages);
 
-    // 操作类：按照控制器返回值操作
-
     // 运行命令
     void startMoveCommand(PlanType planType, int queueNumber);
     // 操作命令
@@ -64,6 +61,16 @@ public:
     void changeVelocityCommand(int runVel,int jogVel);
     void backToZeroCommand();
     void stopMoveCommand();
+
+    // 回应类：按照控制器返回值操作
+    void responseChangeController(bool result, int controlLaw);
+    void responseChangePlanner(bool result, int planner);
+    void responseSlaveConnect(bool isConnect);
+    void responseStart(bool isConnect, int controlLaw, int planner,
+                       int runSpeed, int jogspeed, QString robotType);
+    void responseChangeVel(bool result);
+    void responseBackToZero(bool result);
+    void responsePosition(bool result, QJsonDocument &jsonDocument);
 
 private slots:
     // 网络通讯
