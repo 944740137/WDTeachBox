@@ -250,9 +250,12 @@ void CommunicationController::responseStart(bool isConnect, int controlLaw, int 
     this->ui->plan_ComboBox->setCurrentIndex(planner);
     this->ui->runVel_lab_2->setText(QString::number(runSpeed));
     this->ui->jogVel_lab_2->setText(QString::number(jogspeed));
+
+    //点位信息
     QJsonObject taskJsonObject;
     getJsonObjectFromFile(TaskJsonPath, taskJsonObject);
     QJsonDocument taskJsonDocument(taskJsonObject);
+
     for (int i = 0; i < this->referenceManager->jointRunningQueueGroup[0].size(); i++)
     {
         this->referenceManager->jointRunningQueueGroup[0][i]->setText(QString::number(taskJsonDocument[robotType]["q1"][i].toDouble()));

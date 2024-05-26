@@ -57,6 +57,8 @@ InterfaceController::InterfaceController(const Config &config, ReferenceManager 
         this->referenceManager->runPageChangeMoveGoal[i]->setCheckable(true);
         for (int j = 0; j < this->referenceManager->jointRunningQueueGroup[0].size(); j++)
             this->referenceManager->jointRunningQueueGroup[i][j]->setEnabled(false);
+        for (int j = 0; j < this->referenceManager->cartesianRunningQueueGroup[0].size(); j++)
+            this->referenceManager->cartesianRunningQueueGroup[i][j]->setEnabled(false);
     }
 }
 
