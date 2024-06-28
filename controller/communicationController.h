@@ -28,10 +28,12 @@ private:
     Ui::MainWindow *ui;
     ReferenceManager *referenceManager;
 
-    //从站状态查询定时器
+    // 从站状态查询定时器
     QTimer *checkoutSlaveTimer;
     // 运行界面位置更新
     QTimer *askPosTimer;
+    // 点动定时器
+    QTimer *jogTimer;
 
     // 网络通讯
     QTimer *connectTimer;
@@ -53,7 +55,7 @@ public:
     void sendMessages(uint16_t num, const QString &messages);
 
     // 运行命令
-    void startMoveCommand(PlanType planType, int queueNumber);
+    void startMoveCommand(Space planSpace, int queueNumber);
     // 操作命令
     void initializeParamCommand();// 初始化示教器值命令
     void changeControllerCommand(int index);
@@ -61,6 +63,8 @@ public:
     void changeVelocityCommand(int runVel,int jogVel);
     void backToZeroCommand();
     void stopMoveCommand();
+    void jogMoveCommand(int index,int dir);
+    void jogStopCommand(int index);
 
     // 回应类：按照控制器返回值操作
     void responseChangeController(bool result, int controlLaw);
@@ -82,5 +86,6 @@ private slots:
     // 定时器命令
     void checkSlaveConnectCommand();//从站状态查询
     void getPositionCommand();
+    void jogMoveCycleCommand();
 };
 #endif // CLIENTCOM_H

@@ -23,6 +23,7 @@ private:
     QList<QList<QLineEdit*>> jointRunningQueueGroup;
     QList<QList<QLineEdit*>> cartesianRunningQueueGroup;
     QList<QPushButton*> runPageChangeMoveGoal;
+    QList<QPushButton*> runPageTeachPosition;
 
 public:
     ~ReferenceManager();

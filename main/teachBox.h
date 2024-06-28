@@ -66,6 +66,35 @@ private slots:
     // 功能按钮
     void on_backZero_Btn_clicked();
     void on_stop_Btn_clicked();
+    //点动按钮
+    void on_J1_Btn1_pressed();
+    void on_J1_Btn2_pressed();
+    void on_J2_Btn1_pressed();
+    void on_J2_Btn2_pressed();
+    void on_J3_Btn1_pressed();
+    void on_J3_Btn2_pressed();
+    void on_J4_Btn1_pressed();
+    void on_J4_Btn2_pressed();
+    void on_J5_Btn1_pressed();
+    void on_J5_Btn2_pressed();
+    void on_J6_Btn1_pressed();
+    void on_J6_Btn2_pressed();
+    void on_J7_Btn1_pressed();
+    void on_J7_Btn2_pressed();
 
+    void on_J1_Btn1_released();
+    void on_J1_Btn2_released();
+    void on_J2_Btn1_released();
+    void on_J2_Btn2_released();
+    void on_J3_Btn1_released();
+    void on_J3_Btn2_released();
+    void on_J4_Btn1_released();
+    void on_J4_Btn2_released();
+    void on_J5_Btn1_released();
+    void on_J5_Btn2_released();
+    void on_J6_Btn1_released();
+    void on_J6_Btn2_released();
+    void on_J7_Btn1_released();
+    void on_J7_Btn2_released();
 };
 #endif // MAINWINDOW_H

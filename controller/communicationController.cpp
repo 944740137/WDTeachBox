@@ -23,6 +23,9 @@ CommunicationController::CommunicationController(const Config &config, Reference
     connect(this->checkoutSlaveTimer, SIGNAL(timeout()), this, SLOT(checkSlaveConnectCommand()));
     this->checkoutSlaveTimer->start(500);
 
+    this->jogTimer = new QTimer(this);
+    connect(this->jogTimer, SIGNAL(timeout()), this, SLOT(jogMoveCycleCommand()));
+
     // 运行界面位置更新
     connect(this->askPosTimer, SIGNAL(timeout()), this, SLOT(getPositionCommand()));
 }
@@ -84,6 +87,13 @@ void CommunicationController::receiveMessages()
         break;
     case Response_Position: // 查询位置
         this->responsePosition(jsonDocument["result"].toBool(), jsonDocument);
+        break;
+    case Response_JogMove: // 点动开始
+        //
+        break;
+    case Response_JogStop: // 点动停止
+        //
+        break;
     default:
         break;
     }
@@ -172,12 +182,12 @@ void CommunicationController::stopMoveCommand()
     QJsonObject jsonObject;
     this->sendMessages(Request_StopMove, QString(QJsonDocument(jsonObject).toJson()));
 }
-void CommunicationController::startMoveCommand(PlanType planType, int queueNumber)
+void CommunicationController::startMoveCommand(Space planSpace, int queueNumber)
 {
     QJsonObject jsonObject;
     QJsonArray jsonArray;
-    switch (planType) {
-    case PlanType::joint:
+    switch (planSpace) {
+    case Space::joint:
         for (int i = 0; i < this->referenceManager->jointRunningQueueGroup[0].size(); i++)
         {
             if(this->referenceManager->jointRunningQueueGroup[queueNumber - 1][i]->text().isEmpty())
@@ -190,7 +200,7 @@ void CommunicationController::startMoveCommand(PlanType planType, int queueNumbe
         jsonObject["planType"] = 0;
         jsonObject["q_d"] = jsonArray;
         break;
-    case PlanType::cartesian:
+    case Space::cartesian:
         for (int i = 0; i < 6; i++)
         {
             if(this->referenceManager->cartesianRunningQueueGroup[queueNumber - 1][i]->text().isEmpty())
@@ -209,7 +219,25 @@ void CommunicationController::startMoveCommand(PlanType planType, int queueNumbe
     }
     this->sendMessages(Request_CreateRunTask, QString(QJsonDocument(jsonObject).toJson()));
 }
-
+void CommunicationController::jogMoveCommand(int index,int dir)
+{
+    QJsonObject jsonObject;
+    jsonObject["joint"] = index;
+    jsonObject["dir"] = dir;
+    this->sendMessages(Request_JogMove, QString(QJsonDocument(jsonObject).toJson()));
+    this->jogTimer->start(50);
+}
+void CommunicationController::jogMoveCycleCommand()
+{
+    QJsonObject jsonObject;
+    this->sendMessages(Request_JogCycleMove, QString(QJsonDocument(jsonObject).toJson()));
+}
+void CommunicationController::jogStopCommand(int index)
+{
+    QJsonObject jsonObject;
+    this->sendMessages(Request_JogStop, QString(QJsonDocument(jsonObject).toJson()));
+    this->jogTimer->stop();
+}
 //回应
 void CommunicationController::responseChangeController(bool result, int controlLaw)
 {
@@ -285,4 +313,3 @@ void CommunicationController::responsePosition(bool result, QJsonDocument &jsonD
         this->referenceManager->runPageNowCartesianPosition[i]->setText(QString::number(jsonDocument["X"][i].toDouble(),'f', 2));
     }
 }
-

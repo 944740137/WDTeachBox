@@ -198,5 +198,18 @@ void InterfaceController::changeMoveGoal(int index, bool checked)
     }
 
 }
+void InterfaceController::teachPosition(int index, Space teachSpace)
+{
+    switch (teachSpace) {
+    case Space::joint:
 
+        break;
+    case Space::cartesian:
+
+        break;
+    default:
+        qDebug()<<"[------] error teachPosition"<<endl;
+        break;
+    }
+}
 

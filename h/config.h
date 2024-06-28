@@ -21,7 +21,7 @@ enum VelocityType
     jogVelocity = 0,
     runVelocity = 1
 };
-enum PlanType
+enum Space
 {
     joint = 0,
     cartesian = 1
