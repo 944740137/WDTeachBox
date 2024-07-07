@@ -77,7 +77,7 @@ void CommunicationController::receiveMessages()
         this->responseSlaveConnect(jsonDocument["connect"].toBool());
         break;
     case Response_Start: // 示教器开机初始化
-        this->responseStart(jsonDocument["connect"].toBool(), jsonDocument["controlLaw"].toInt(), jsonDocument["planner"].toInt(), jsonDocument["runSpeed"].toInt(), jsonDocument["jogspeed"].toInt(), "panda");
+        this->responseStart(jsonDocument["connect"].toBool(), jsonDocument["controlLaw"].toInt(), jsonDocument["planner"].toInt(), jsonDocument["space"].toInt(), jsonDocument["runSpeed"].toInt(), jsonDocument["jogspeed"].toInt(), "panda");
         break;
     case Response_ChangeVel: // 修改速度
         this->responseChangeVel(jsonDocument["result"].toBool());
@@ -93,6 +93,9 @@ void CommunicationController::receiveMessages()
         break;
     case Response_JogStop: // 点动停止
         //
+        break;
+    case Response_ChangeSpace: // 坐标系
+        this->responseChangeSpace(jsonDocument["result"].toBool(),jsonDocument["space"].toInt());
         break;
     default:
         break;
@@ -165,6 +168,14 @@ void CommunicationController::changePlannerCommand(int index)
     //json to qstring
     this->sendMessages(Request_ChangePlanner, QString(QJsonDocument(jsonObject).toJson()));
 }
+void CommunicationController::changeSpaceCommand(int index)
+{
+    QJsonObject jsonObject;
+    jsonObject["space"] = index;
+    //json to qstring
+    qDebug()<<"changeSpaceCommand"<<endl;
+    this->sendMessages(Request_ChangeSpace, QString(QJsonDocument(jsonObject).toJson()));
+}
 void CommunicationController::changeVelocityCommand(int runVel, int jogVel)
 {
     QJsonObject jsonObject;
@@ -221,8 +232,11 @@ void CommunicationController::startMoveCommand(Space planSpace, int queueNumber)
 }
 void CommunicationController::jogMoveCommand(int index,int dir)
 {
+
     QJsonObject jsonObject;
     jsonObject["joint"] = index;
+    jsonObject["space"] = ui->space_ComboBox->currentIndex();
+    qDebug()<<ui->space_ComboBox->currentIndex()<<endl;
     jsonObject["dir"] = dir;
     this->sendMessages(Request_JogMove, QString(QJsonDocument(jsonObject).toJson()));
     this->jogTimer->start(50);
@@ -249,6 +263,12 @@ void CommunicationController::responseChangePlanner(bool result, int planner)
     //    if(result)
     this->ui->plan_ComboBox->setCurrentIndex(planner);
 }
+void CommunicationController::responseChangeSpace(bool result, int space)
+{
+    //    if(result)
+    qDebug()<<"space "<<space<<endl;
+    this->ui->space_ComboBox->setCurrentIndex(space);
+}
 void CommunicationController::responseSlaveConnect(bool isConnect)
 {
     if(isConnect)
@@ -262,7 +282,7 @@ void CommunicationController::responseSlaveConnect(bool isConnect)
         this->ui->slaveStatus_Label->setText("从站掉线");
     }
 }
-void CommunicationController::responseStart(bool isConnect, int controlLaw, int planner, int runSpeed, int jogspeed, QString robotType)
+void CommunicationController::responseStart(bool isConnect, int controlLaw, int planner, int space, int runSpeed, int jogspeed, QString robotType)
 {
     if(isConnect)
     {
@@ -276,6 +296,7 @@ void CommunicationController::responseStart(bool isConnect, int controlLaw, int 
     }
     this->ui->ctr_ComboBox->setCurrentIndex(controlLaw);
     this->ui->plan_ComboBox->setCurrentIndex(planner);
+    this->ui->space_ComboBox->setCurrentIndex(space);
     this->ui->runVel_lab_2->setText(QString::number(runSpeed));
     this->ui->jogVel_lab_2->setText(QString::number(jogspeed));
 

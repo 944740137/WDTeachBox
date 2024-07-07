@@ -35,4 +35,6 @@
 #define Request_JogStop 1205
 #define Response_JogStop 1206
 
+#define Request_ChangeSpace 1212
+#define Response_ChangeSpace 1213
 #endif // PROTOCOL_H

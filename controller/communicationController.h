@@ -59,6 +59,7 @@ public:
     // 操作命令
     void initializeParamCommand();// 初始化示教器值命令
     void changeControllerCommand(int index);
+    void changeSpaceCommand(int index);
     void changePlannerCommand(int index);
     void changeVelocityCommand(int runVel,int jogVel);
     void backToZeroCommand();
@@ -69,9 +70,9 @@ public:
     // 回应类：按照控制器返回值操作
     void responseChangeController(bool result, int controlLaw);
     void responseChangePlanner(bool result, int planner);
+    void responseChangeSpace(bool result, int space);
     void responseSlaveConnect(bool isConnect);
-    void responseStart(bool isConnect, int controlLaw, int planner,
-                       int runSpeed, int jogspeed, QString robotType);
+    void responseStart(bool isConnect, int controlLaw, int planner,int space, int runSpeed, int jogspeed, QString robotType);
     void responseChangeVel(bool result);
     void responseBackToZero(bool result);
     void responsePosition(bool result, QJsonDocument &jsonDocument);

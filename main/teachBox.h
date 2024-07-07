@@ -37,6 +37,7 @@ private slots:
     // 规控切换组合框
     void on_ctr_ComboBox_activated(int index);
     void on_plan_ComboBox_activated(int index);
+    void on_space_ComboBox_activated(int index);
     // 速度增减按钮
     void on_jogVel_Btn2_clicked();
     void on_jogVel_Btn1_clicked();
@@ -96,5 +97,31 @@ private slots:
     void on_J6_Btn2_released();
     void on_J7_Btn1_released();
     void on_J7_Btn2_released();
+
+    void on_X_Btn1_pressed();
+    void on_X_Btn2_pressed();
+    void on_Y_Btn1_pressed();
+    void on_Y_Btn2_pressed();
+    void on_Z_Btn1_pressed();
+    void on_Z_Btn2_pressed();
+    void on_r_Btn1_pressed();
+    void on_r_Btn2_pressed();
+    void on_p_Btn1_pressed();
+    void on_p_Btn2_pressed();
+    void on_y_Btn1_pressed();
+    void on_y_Btn2_pressed();
+
+    void on_X_Btn1_released();
+    void on_X_Btn2_released();
+    void on_Y_Btn1_released();
+    void on_Y_Btn2_released();
+    void on_Z_Btn1_released();
+    void on_Z_Btn2_released();
+    void on_r_Btn1_released();
+    void on_r_Btn2_released();
+    void on_p_Btn1_released();
+    void on_p_Btn2_released();
+    void on_y_Btn1_released();
+    void on_y_Btn2_released();
 };
 #endif // MAINWINDOW_H

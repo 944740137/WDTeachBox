@@ -4625,7 +4625,7 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="ctr_Label_2">
+   <widget class="QLabel" name="space_Label">
     <property name="geometry">
      <rect>
       <x>660</x>
@@ -4646,7 +4646,7 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QComboBox" name="ctr_ComboBox_2">
+   <widget class="QComboBox" name="space_ComboBox">
     <property name="geometry">
      <rect>
       <x>750</x>
@@ -5006,7 +5006,7 @@
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
-      <widget class="QPushButton" name="J1_Btn1_2">
+      <widget class="QPushButton" name="X_Btn1">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -5019,7 +5019,7 @@
         <string>-</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="J1_Btn2_2">
+      <widget class="QPushButton" name="X_Btn2">
        <property name="geometry">
         <rect>
          <x>100</x>
@@ -5032,7 +5032,7 @@
         <string>+</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="J2_Btn1_2">
+      <widget class="QPushButton" name="Y_Btn1">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -5045,7 +5045,7 @@
         <string>-</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="J3_Btn1_2">
+      <widget class="QPushButton" name="Z_Btn1">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -5058,7 +5058,7 @@
         <string>-</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="J4_Btn1_2">
+      <widget class="QPushButton" name="r_Btn1">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -5071,7 +5071,7 @@
         <string>-</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="J5_Btn1_2">
+      <widget class="QPushButton" name="p_Btn1">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -5084,7 +5084,7 @@
         <string>-</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="J6_Btn1_2">
+      <widget class="QPushButton" name="y_Btn1">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -5097,7 +5097,7 @@
         <string>-</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="J2_Btn2_2">
+      <widget class="QPushButton" name="Y_Btn2">
        <property name="geometry">
         <rect>
          <x>100</x>
@@ -5110,7 +5110,7 @@
         <string>+</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="J3_Btn2_2">
+      <widget class="QPushButton" name="Z_Btn2">
        <property name="geometry">
         <rect>
          <x>100</x>
@@ -5123,7 +5123,7 @@
         <string>+</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="J4_Btn2_2">
+      <widget class="QPushButton" name="r_Btn2">
        <property name="geometry">
         <rect>
          <x>100</x>
@@ -5136,7 +5136,7 @@
         <string>+</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="J5_Btn2_2">
+      <widget class="QPushButton" name="p_Btn2">
        <property name="geometry">
         <rect>
          <x>100</x>
@@ -5149,7 +5149,7 @@
         <string>+</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="J6_Btn2_2">
+      <widget class="QPushButton" name="y_Btn2">
        <property name="geometry">
         <rect>
          <x>100</x>
@@ -5162,7 +5162,7 @@
         <string>+</string>
        </property>
       </widget>
-      <widget class="QLabel" name="J1_Label_2">
+      <widget class="QLabel" name="X_Label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -5178,7 +5178,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="J2_Label_2">
+      <widget class="QLabel" name="Y_Label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -5194,7 +5194,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="J3_Label_2">
+      <widget class="QLabel" name="Z_Label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -5210,7 +5210,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="J4_Label_2">
+      <widget class="QLabel" name="r_Label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -5226,7 +5226,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="J5_Label_2">
+      <widget class="QLabel" name="p_Label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -5242,7 +5242,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="J6_Label_2">
+      <widget class="QLabel" name="y_Label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -5282,24 +5282,8 @@
    </hints>
   </connection>
   <connection>
-   <sender>ctr_ComboBox_2</sender>
-   <signal>activated(int)</signal>
-   <receiver>stackedWidget</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>861</x>
-     <y>32</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1055</x>
-     <y>272</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>ctr_ComboBox_2</sender>
-   <signal>activated(int)</signal>
+   <sender>space_ComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
    <receiver>runQueue_stackedWidget1</receiver>
    <slot>setCurrentIndex(int)</slot>
    <hints>
@@ -5314,8 +5298,8 @@
    </hints>
   </connection>
   <connection>
-   <sender>ctr_ComboBox_2</sender>
-   <signal>activated(int)</signal>
+   <sender>space_ComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
    <receiver>runQueue_stackedWidget2</receiver>
    <slot>setCurrentIndex(int)</slot>
    <hints>
@@ -5330,8 +5314,8 @@
    </hints>
   </connection>
   <connection>
-   <sender>ctr_ComboBox_2</sender>
-   <signal>activated(int)</signal>
+   <sender>space_ComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
    <receiver>runQueue_stackedWidget3</receiver>
    <slot>setCurrentIndex(int)</slot>
    <hints>
@@ -5346,8 +5330,8 @@
    </hints>
   </connection>
   <connection>
-   <sender>ctr_ComboBox_2</sender>
-   <signal>activated(int)</signal>
+   <sender>space_ComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
    <receiver>runQueue_stackedWidget4</receiver>
    <slot>setCurrentIndex(int)</slot>
    <hints>
@@ -5362,8 +5346,8 @@
    </hints>
   </connection>
   <connection>
-   <sender>ctr_ComboBox_2</sender>
-   <signal>activated(int)</signal>
+   <sender>space_ComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
    <receiver>runQueue_stackedWidget5</receiver>
    <slot>setCurrentIndex(int)</slot>
    <hints>
@@ -5378,8 +5362,8 @@
    </hints>
   </connection>
   <connection>
-   <sender>ctr_ComboBox_2</sender>
-   <signal>activated(int)</signal>
+   <sender>space_ComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
    <receiver>runQueue_stackedWidget6</receiver>
    <slot>setCurrentIndex(int)</slot>
    <hints>
@@ -5390,6 +5374,22 @@
     <hint type="destinationlabel">
      <x>795</x>
      <y>560</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>space_ComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>stackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>861</x>
+     <y>32</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1055</x>
+     <y>272</y>
     </hint>
    </hints>
   </connection>

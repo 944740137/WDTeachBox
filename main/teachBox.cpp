@@ -40,6 +40,11 @@ void TeachBox::on_plan_ComboBox_activated(int index)
 {
     this->communicationController->changePlannerCommand(index);
 }
+void TeachBox::on_space_ComboBox_activated(int index)
+{
+    this->communicationController->changeSpaceCommand(index);
+}
+
 // 速度增减按钮
 void TeachBox::on_jogVel_Btn2_clicked()
 {
@@ -255,3 +260,99 @@ void TeachBox::on_J7_Btn2_released()
     this->communicationController->jogStopCommand(7);
 }
 
+void TeachBox::on_X_Btn1_pressed()
+{
+    this->communicationController->jogMoveCommand(1,-1);
+}
+void TeachBox::on_X_Btn2_pressed()
+{
+    this->communicationController->jogMoveCommand(1,1);
+}
+void TeachBox::on_Y_Btn1_pressed()
+{
+    this->communicationController->jogMoveCommand(2,-1);
+}
+void TeachBox::on_Y_Btn2_pressed()
+{
+    this->communicationController->jogMoveCommand(2,1);
+}
+void TeachBox::on_Z_Btn1_pressed()
+{
+    this->communicationController->jogMoveCommand(3,-1);
+}
+void TeachBox::on_Z_Btn2_pressed()
+{
+    this->communicationController->jogMoveCommand(3,1);
+}
+void TeachBox::on_r_Btn1_pressed()
+{
+    this->communicationController->jogMoveCommand(4,-1);
+}
+void TeachBox::on_r_Btn2_pressed()
+{
+    this->communicationController->jogMoveCommand(4,1);
+}
+void TeachBox::on_p_Btn1_pressed()
+{
+    this->communicationController->jogMoveCommand(5,-1);
+}
+void TeachBox::on_p_Btn2_pressed()
+{
+    this->communicationController->jogMoveCommand(5,1);
+}
+void TeachBox::on_y_Btn1_pressed()
+{
+    this->communicationController->jogMoveCommand(6,-1);
+}
+void TeachBox::on_y_Btn2_pressed()
+{
+    this->communicationController->jogMoveCommand(6,1);
+}
+void TeachBox::on_X_Btn1_released()
+{
+    this->communicationController->jogStopCommand(1);
+}
+void TeachBox::on_X_Btn2_released()
+{
+    this->communicationController->jogStopCommand(1);
+}
+void TeachBox::on_Y_Btn1_released()
+{
+    this->communicationController->jogStopCommand(2);
+}
+void TeachBox::on_Y_Btn2_released()
+{
+    this->communicationController->jogStopCommand(2);
+}
+void TeachBox::on_Z_Btn1_released()
+{
+    this->communicationController->jogStopCommand(3);
+}
+void TeachBox::on_Z_Btn2_released()
+{
+    this->communicationController->jogStopCommand(3);
+}
+void TeachBox::on_r_Btn1_released()
+{
+    this->communicationController->jogStopCommand(4);
+}
+void TeachBox::on_r_Btn2_released()
+{
+    this->communicationController->jogStopCommand(4);
+}
+void TeachBox::on_p_Btn1_released()
+{
+    this->communicationController->jogStopCommand(5);
+}
+void TeachBox::on_p_Btn2_released()
+{
+    this->communicationController->jogStopCommand(5);
+}
+void TeachBox::on_y_Btn1_released()
+{
+    this->communicationController->jogStopCommand(6);
+}
+void TeachBox::on_y_Btn2_released()
+{
+    this->communicationController->jogStopCommand(6);
+}
