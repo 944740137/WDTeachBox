@@ -42,12 +42,12 @@ InterfaceController::InterfaceController(const Config &config, ReferenceManager 
         for(int j =0; j<3; j++)
         {
             this->referenceManager->cartesianRunningQueueGroup[i][j]->setValidator(new QIntValidator(this->referenceManager->cartesianRunningQueueGroup[i][j]));
-            this->referenceManager->cartesianRunningQueueGroup[i][j]->setValidator(new QRegExpValidator(QRegExp("^-?([01](\.\d{1,4})?|1(\.0{1,4})?|-1(\.[0-5]{1,4})?)$")));
+            this->referenceManager->cartesianRunningQueueGroup[i][j]->setValidator(new QRegExpValidator(QRegExp("^\\d+(\\.\\d+)?$")));
         }
         for(int j =3; j<6; j++)
         {
             this->referenceManager->cartesianRunningQueueGroup[i][j]->setValidator(new QIntValidator(this->referenceManager->cartesianRunningQueueGroup[i][j]));
-            this->referenceManager->cartesianRunningQueueGroup[i][j]->setValidator(new QRegExpValidator(QRegExp("^-?((1[0-7]\\d(\\.\\d{1,2})?)|180(\\.0{1,2})?|\\d{1,2}(\\.\\d{1,2})?)$")));
+            //this->referenceManager->cartesianRunningQueueGroup[i][j]->setValidator(new QRegExpValidator(QRegExp("^-?((1[0-7]\\d(\\.\\d{1,2})?)|180(\\.0{1,2})?|\\d{1,2}(\\.\\d{1,2})?)$")));
         }
     }
     // 运行界面：修改点位
@@ -162,36 +162,67 @@ void InterfaceController::changeVelocity(VelocityType velocityType, bool isPlus,
     int runVel = ui->runVel_lab_2->text().toInt();
     communicationController->changeVelocityCommand(runVel, jogVel);
 }
-void InterfaceController::changeMoveGoal(int index, bool checked)
+void InterfaceController::changeMoveGoal(int index, bool checked, Space space)
 {
     if(checked)
     {
         this->referenceManager->runPageChangeMoveGoal[index - 1]->setText("确定");
-        for(int i =0; i < this->referenceManager->jointRunningQueueGroup[0].size(); i++)
+        if(space == Space::joint)
         {
-            this->referenceManager->jointRunningQueueGroup[index - 1][i]->setEnabled(true);
+            for(int i =0; i < this->referenceManager->jointRunningQueueGroup[0].size(); i++)
+            {
+                this->referenceManager->jointRunningQueueGroup[index - 1][i]->setEnabled(true);
+            }
         }
+        else
+        {
+            for(int i =0; i < this->referenceManager->cartesianRunningQueueGroup[0].size(); i++)
+            {
+                this->referenceManager->cartesianRunningQueueGroup[index - 1][i]->setEnabled(true);
+            }
+        }
+
     }
     else
     {
         // 按下确定
         this->referenceManager->runPageChangeMoveGoal[index - 1]->setText("修改");
-        for(int i =0; i < this->referenceManager->jointRunningQueueGroup[0].size(); i++)
+        if(space == Space::joint)
         {
-            this->referenceManager->jointRunningQueueGroup[index - 1][i]->setEnabled(false);
+            for(int i =0; i < this->referenceManager->jointRunningQueueGroup[0].size(); i++)
+            {
+                this->referenceManager->jointRunningQueueGroup[index - 1][i]->setEnabled(false);
+            }
+        }
+        else
+        {
+            for(int i =0; i < this->referenceManager->cartesianRunningQueueGroup[0].size(); i++)
+            {
+                this->referenceManager->cartesianRunningQueueGroup[index - 1][i]->setEnabled(false);
+            }
         }
 
         QJsonObject robotJsonObject;
         QJsonObject taskJsonObject;
-        QJsonArray bearArray[7];
-        QList<QString> position = {"q1","q2","q3","q4","q5","q6"};
-        for (int i = 0; i < position.size(); i++)
+        QJsonArray bearArray1[7];
+        QList<QString> position1 = {"q1","q2","q3","q4","q5","q6"};
+        for (int i = 0; i < position1.size(); i++)
         {
             for (int j = 0; j < this->referenceManager->jointRunningQueueGroup[i].size(); j++)
             {
-                bearArray[i].append(this->referenceManager->jointRunningQueueGroup[i][j]->text().toDouble());
+                bearArray1[i].append(this->referenceManager->jointRunningQueueGroup[i][j]->text().toDouble());
             }
-            robotJsonObject[position[i]] = bearArray[i];
+            robotJsonObject[position1[i]] = bearArray1[i];
+        }
+        QJsonArray bearArray2[7];
+        QList<QString> position2 = {"x1","x2","x3","x4","x5","x6"};
+        for (int i = 0; i < position2.size(); i++)
+        {
+            for (int j = 0; j < this->referenceManager->cartesianRunningQueueGroup[i].size(); j++)
+            {
+                bearArray2[i].append(this->referenceManager->cartesianRunningQueueGroup[i][j]->text().toDouble());
+            }
+            robotJsonObject[position2[i]] = bearArray2[i];
         }
         taskJsonObject["panda"] = robotJsonObject;
         setJsonObjectToFile(TaskJsonPath, taskJsonObject);

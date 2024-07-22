@@ -29,7 +29,7 @@ public:
     void functionPageSwitching(QListWidgetItem *current, QListWidgetItem *previous, CommunicationController *communicationController);
     void setIPandPort(bool checked, CommunicationController *communicationController);
     void changeVelocity(VelocityType velocityType, bool isPlus, CommunicationController *communicationController);
-    void changeMoveGoal(int index, bool checked);
+    void changeMoveGoal(int index, bool checked, Space space);
     void teachPosition(int index, Space teachSpace);
 
 private slots:

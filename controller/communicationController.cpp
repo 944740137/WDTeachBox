@@ -158,22 +158,18 @@ void CommunicationController::changeControllerCommand(int index)
 {
     QJsonObject jsonObject;
     jsonObject["controlLaw"] = index;
-    //json to qstring
     this->sendMessages(Request_ChangeController, QString(QJsonDocument(jsonObject).toJson()));
 }
 void CommunicationController::changePlannerCommand(int index)
 {
     QJsonObject jsonObject;
     jsonObject["planner"] = index;
-    //json to qstring
     this->sendMessages(Request_ChangePlanner, QString(QJsonDocument(jsonObject).toJson()));
 }
 void CommunicationController::changeSpaceCommand(int index)
 {
     QJsonObject jsonObject;
     jsonObject["space"] = index;
-    //json to qstring
-    qDebug()<<"changeSpaceCommand"<<endl;
     this->sendMessages(Request_ChangeSpace, QString(QJsonDocument(jsonObject).toJson()));
 }
 void CommunicationController::changeVelocityCommand(int runVel, int jogVel)
@@ -236,7 +232,6 @@ void CommunicationController::jogMoveCommand(int index,int dir)
     QJsonObject jsonObject;
     jsonObject["joint"] = index;
     jsonObject["space"] = ui->space_ComboBox->currentIndex();
-    qDebug()<<ui->space_ComboBox->currentIndex()<<endl;
     jsonObject["dir"] = dir;
     this->sendMessages(Request_JogMove, QString(QJsonDocument(jsonObject).toJson()));
     this->jogTimer->start(50);
@@ -313,6 +308,15 @@ void CommunicationController::responseStart(bool isConnect, int controlLaw, int 
         this->referenceManager->jointRunningQueueGroup[3][i]->setText(QString::number(taskJsonDocument[robotType]["q4"][i].toDouble()));
         this->referenceManager->jointRunningQueueGroup[4][i]->setText(QString::number(taskJsonDocument[robotType]["q5"][i].toDouble()));
         this->referenceManager->jointRunningQueueGroup[5][i]->setText(QString::number(taskJsonDocument[robotType]["q6"][i].toDouble()));
+    }
+    for (int i = 0; i < this->referenceManager->cartesianRunningQueueGroup[0].size(); i++)
+    {
+        this->referenceManager->cartesianRunningQueueGroup[0][i]->setText(QString::number(taskJsonDocument[robotType]["x1"][i].toDouble()));
+        this->referenceManager->cartesianRunningQueueGroup[1][i]->setText(QString::number(taskJsonDocument[robotType]["x2"][i].toDouble()));
+        this->referenceManager->cartesianRunningQueueGroup[2][i]->setText(QString::number(taskJsonDocument[robotType]["x3"][i].toDouble()));
+        this->referenceManager->cartesianRunningQueueGroup[3][i]->setText(QString::number(taskJsonDocument[robotType]["x4"][i].toDouble()));
+        this->referenceManager->cartesianRunningQueueGroup[4][i]->setText(QString::number(taskJsonDocument[robotType]["x5"][i].toDouble()));
+        this->referenceManager->cartesianRunningQueueGroup[5][i]->setText(QString::number(taskJsonDocument[robotType]["x6"][i].toDouble()));
     }
 }
 void CommunicationController::responseChangeVel(bool result)

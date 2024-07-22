@@ -65,27 +65,45 @@ void TeachBox::on_runVel_Btn_2_clicked()
 // 运行页面：运行按钮
 void TeachBox::on_runQueue_enable_Btn12_clicked()
 {
-    this->communicationController->startMoveCommand(Space::joint, 1);
+    if(ui->space_ComboBox->currentIndex() == 0)
+        this->communicationController->startMoveCommand(Space::joint, 1);
+    else
+        this->communicationController->startMoveCommand(Space::cartesian, 1);
 }
 void TeachBox::on_runQueue_enable_Btn22_clicked()
 {
-    this->communicationController->startMoveCommand(Space::joint, 2);
+    if(ui->space_ComboBox->currentIndex() == 0)
+        this->communicationController->startMoveCommand(Space::joint, 2);
+    else
+        this->communicationController->startMoveCommand(Space::cartesian, 2);
 }
 void TeachBox::on_runQueue_enable_Btn32_clicked()
 {
-    this->communicationController->startMoveCommand(Space::joint, 3);
+    if(ui->space_ComboBox->currentIndex() == 0)
+        this->communicationController->startMoveCommand(Space::joint, 3);
+    else
+        this->communicationController->startMoveCommand(Space::cartesian, 3);
 }
 void TeachBox::on_runQueue_enable_Btn42_clicked()
 {
-    this->communicationController->startMoveCommand(Space::joint, 4);
+    if(ui->space_ComboBox->currentIndex() == 0)
+        this->communicationController->startMoveCommand(Space::joint, 4);
+    else
+        this->communicationController->startMoveCommand(Space::cartesian, 4);
 }
 void TeachBox::on_runQueue_enable_Btn52_clicked()
 {
-    this->communicationController->startMoveCommand(Space::joint, 5);
+    if(ui->space_ComboBox->currentIndex() == 0)
+        this->communicationController->startMoveCommand(Space::joint, 5);
+    else
+        this->communicationController->startMoveCommand(Space::cartesian, 5);
 }
 void TeachBox::on_runQueue_enable_Btn62_clicked()
 {
-    this->communicationController->startMoveCommand(Space::joint, 6);
+    if(ui->space_ComboBox->currentIndex() == 0)
+        this->communicationController->startMoveCommand(Space::joint, 6);
+    else
+        this->communicationController->startMoveCommand(Space::cartesian, 6);
 }
 // 运行页面：示教按钮
 void TeachBox::on_runQueue_enable_Btn11_clicked()
@@ -115,27 +133,45 @@ void TeachBox::on_runQueue_enable_Btn61_clicked()
 // 运行页面：保存按钮
 void TeachBox::on_runQueue_enable_Btn13_toggled(bool checked)
 {
-    this->interfaceController->changeMoveGoal(1, checked);
+    if(ui->space_ComboBox->currentIndex() == 0)
+        this->interfaceController->changeMoveGoal(1, checked,Space::joint);
+    else
+        this->interfaceController->changeMoveGoal(1, checked,Space::cartesian);
 }
 void TeachBox::on_runQueue_enable_Btn23_toggled(bool checked)
 {
-    this->interfaceController->changeMoveGoal(2, checked);
+    if(ui->space_ComboBox->currentIndex() == 0)
+        this->interfaceController->changeMoveGoal(2, checked,Space::joint);
+    else
+        this->interfaceController->changeMoveGoal(2, checked,Space::cartesian);
 }
 void TeachBox::on_runQueue_enable_Btn33_toggled(bool checked)
 {
-    this->interfaceController->changeMoveGoal(3, checked);
+    if(ui->space_ComboBox->currentIndex() == 0)
+        this->interfaceController->changeMoveGoal(3, checked,Space::joint);
+    else
+        this->interfaceController->changeMoveGoal(3, checked,Space::cartesian);
 }
 void TeachBox::on_runQueue_enable_Btn43_toggled(bool checked)
 {
-    this->interfaceController->changeMoveGoal(4, checked);
+    if(ui->space_ComboBox->currentIndex() == 0)
+        this->interfaceController->changeMoveGoal(4, checked,Space::joint);
+    else
+        this->interfaceController->changeMoveGoal(4, checked,Space::cartesian);
 }
 void TeachBox::on_runQueue_enable_Btn53_toggled(bool checked)
 {
-    this->interfaceController->changeMoveGoal(5, checked);
+    if(ui->space_ComboBox->currentIndex() == 0)
+        this->interfaceController->changeMoveGoal(5, checked,Space::joint);
+    else
+        this->interfaceController->changeMoveGoal(5, checked,Space::cartesian);
 }
 void TeachBox::on_runQueue_enable_Btn63_toggled(bool checked)
 {
-    this->interfaceController->changeMoveGoal(6, checked);
+    if(ui->space_ComboBox->currentIndex() == 0)
+        this->interfaceController->changeMoveGoal(6, checked,Space::joint);
+    else
+        this->interfaceController->changeMoveGoal(6, checked,Space::cartesian);
 }
 // 功能按钮类
 void TeachBox::on_backZero_Btn_clicked()
