@@ -261,7 +261,6 @@ void CommunicationController::responseChangePlanner(bool result, int planner)
 void CommunicationController::responseChangeSpace(bool result, int space)
 {
     //    if(result)
-    qDebug()<<"space "<<space<<endl;
     this->ui->space_ComboBox->setCurrentIndex(space);
 }
 void CommunicationController::responseSlaveConnect(bool isConnect)
@@ -338,3 +337,4 @@ void CommunicationController::responsePosition(bool result, QJsonDocument &jsonD
         this->referenceManager->runPageNowCartesianPosition[i]->setText(QString::number(jsonDocument["X"][i].toDouble(),'f', 2));
     }
 }
+

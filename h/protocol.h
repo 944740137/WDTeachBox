@@ -37,4 +37,5 @@
 
 #define Request_ChangeSpace 1212
 #define Response_ChangeSpace 1213
+
 #endif // PROTOCOL_H

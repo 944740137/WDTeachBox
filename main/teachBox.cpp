@@ -108,27 +108,27 @@ void TeachBox::on_runQueue_enable_Btn62_clicked()
 // 运行页面：示教按钮
 void TeachBox::on_runQueue_enable_Btn11_clicked()
 {
-    //    this->interfaceController->teachPosition(1, checked);
+    this->interfaceController->teachPosition(1);
 }
 void TeachBox::on_runQueue_enable_Btn21_clicked()
 {
-
+    this->interfaceController->teachPosition(2);
 }
 void TeachBox::on_runQueue_enable_Btn31_clicked()
 {
-
+    this->interfaceController->teachPosition(3);
 }
 void TeachBox::on_runQueue_enable_Btn41_clicked()
 {
-
+    this->interfaceController->teachPosition(4);
 }
 void TeachBox::on_runQueue_enable_Btn51_clicked()
 {
-
+    this->interfaceController->teachPosition(5);
 }
 void TeachBox::on_runQueue_enable_Btn61_clicked()
 {
-
+    this->interfaceController->teachPosition(6);
 }
 // 运行页面：保存按钮
 void TeachBox::on_runQueue_enable_Btn13_toggled(bool checked)

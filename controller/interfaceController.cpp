@@ -115,7 +115,7 @@ void InterfaceController::setIPandPort(bool checked, CommunicationController *co
         // 判断格式正确
         if(ip.count('.')!=3 || port.isEmpty() ||ip.right(1)=="." )
         {
-//            messageAbout(this, IP_ERROR); // todo:增加message类
+            //            messageAbout(this, IP_ERROR); // todo:增加message类
             qDebug()<<"[------] error IP_ERROR";
             ui->IP_LineEdit->setText(communicationController->ip);
             ui->port_LineEdit->setText(QString::number(communicationController->port));
@@ -201,47 +201,54 @@ void InterfaceController::changeMoveGoal(int index, bool checked, Space space)
                 this->referenceManager->cartesianRunningQueueGroup[index - 1][i]->setEnabled(false);
             }
         }
-
-        QJsonObject robotJsonObject;
-        QJsonObject taskJsonObject;
-        QJsonArray bearArray1[7];
-        QList<QString> position1 = {"q1","q2","q3","q4","q5","q6"};
-        for (int i = 0; i < position1.size(); i++)
-        {
-            for (int j = 0; j < this->referenceManager->jointRunningQueueGroup[i].size(); j++)
-            {
-                bearArray1[i].append(this->referenceManager->jointRunningQueueGroup[i][j]->text().toDouble());
-            }
-            robotJsonObject[position1[i]] = bearArray1[i];
-        }
-        QJsonArray bearArray2[7];
-        QList<QString> position2 = {"x1","x2","x3","x4","x5","x6"};
-        for (int i = 0; i < position2.size(); i++)
-        {
-            for (int j = 0; j < this->referenceManager->cartesianRunningQueueGroup[i].size(); j++)
-            {
-                bearArray2[i].append(this->referenceManager->cartesianRunningQueueGroup[i][j]->text().toDouble());
-            }
-            robotJsonObject[position2[i]] = bearArray2[i];
-        }
-        taskJsonObject["panda"] = robotJsonObject;
-        setJsonObjectToFile(TaskJsonPath, taskJsonObject);
+        this->savePositionToFile();
     }
-
 }
-void InterfaceController::teachPosition(int index, Space teachSpace)
+void InterfaceController::teachPosition(int index)
 {
-    switch (teachSpace) {
-    case Space::joint:
-
-        break;
-    case Space::cartesian:
-
-        break;
-    default:
-        qDebug()<<"[------] error teachPosition"<<endl;
-        break;
+    int space = ui->space_ComboBox->currentIndex();
+    if(space == 0)
+    {
+        for (int i = 0; i < this->referenceManager->jointRunningQueueGroup[0].size(); ++i)
+        {
+            this->referenceManager->jointRunningQueueGroup[index-1][i]->setText(QString::number(this->referenceManager->runPageNowJointPosition[i]->text().toDouble(),'f', 2));
+        }
     }
+    else
+    {
+        for (int i = 0; i < this->referenceManager->cartesianRunningQueueGroup[0].size(); i++)
+        {
+            this->referenceManager->cartesianRunningQueueGroup[index-1][i]->setText(QString::number(this->referenceManager->runPageNowCartesianPosition[i]->text().toDouble(),'f', 2));
+        }
+    }
+    this->savePositionToFile();
+}
+void InterfaceController::savePositionToFile()
+{
+    QJsonObject robotJsonObject;
+    QJsonObject taskJsonObject;
+    QJsonArray bearArray1[7];
+    QList<QString> position1 = {"q1","q2","q3","q4","q5","q6"};
+    for (int i = 0; i < position1.size(); i++)
+    {
+        for (int j = 0; j < this->referenceManager->jointRunningQueueGroup[i].size(); j++)
+        {
+            bearArray1[i].append(this->referenceManager->jointRunningQueueGroup[i][j]->text().toDouble());
+        }
+        robotJsonObject[position1[i]] = bearArray1[i];
+    }
+    QJsonArray bearArray2[7];
+    QList<QString> position2 = {"x1","x2","x3","x4","x5","x6"};
+    for (int i = 0; i < position2.size(); i++)
+    {
+        for (int j = 0; j < this->referenceManager->cartesianRunningQueueGroup[i].size(); j++)
+        {
+            bearArray2[i].append(this->referenceManager->cartesianRunningQueueGroup[i][j]->text().toDouble());
+        }
+        robotJsonObject[position2[i]] = bearArray2[i];
+    }
+    taskJsonObject["panda"] = robotJsonObject;
+    setJsonObjectToFile(TaskJsonPath, taskJsonObject);
 }
 
 

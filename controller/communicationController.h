@@ -34,7 +34,6 @@ private:
     QTimer *askPosTimer;
     // 点动定时器
     QTimer *jogTimer;
-
     // 网络通讯
     QTimer *connectTimer;
     QString ip;
@@ -76,7 +75,7 @@ public:
     void responseChangeVel(bool result);
     void responseBackToZero(bool result);
     void responsePosition(bool result, QJsonDocument &jsonDocument);
-
+    void responseTeachPosition(bool result, QJsonDocument &jsonDocument);
 private slots:
     // 网络通讯
     void toConnect();

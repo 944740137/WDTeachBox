@@ -30,8 +30,10 @@ public:
     void setIPandPort(bool checked, CommunicationController *communicationController);
     void changeVelocity(VelocityType velocityType, bool isPlus, CommunicationController *communicationController);
     void changeMoveGoal(int index, bool checked, Space space);
-    void teachPosition(int index, Space teachSpace);
+    void teachPosition(int index);
 
+    //
+    void savePositionToFile();
 private slots:
 
 };
